@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace WebJobToKc
 {
@@ -61,7 +62,7 @@ namespace WebJobToKc
         //  "createdAt": "2018-04-07T21:10:41.798Z",
         //  "lastModifiedAt": "2018-04-07T21:10:41.798Z"
         //}
-        public static void ProcessQueueMessage([QueueTrigger("posttokc")] string message, TextWriter log)
+        public static async Task ProcessQueueMessage([ServiceBusTrigger("posttokc")] string message, TextWriter log)
         {
 
             log.WriteLine(message);
@@ -93,11 +94,12 @@ namespace WebJobToKc
                                 "}," +
                                 "\"external_id\": \"" + id + "\"" +
                             "}";
-            client.DefaultRequestHeaders.Add("Authorization", "Bearer " + System.Configuration.ConfigurationManager.ConnectionStrings["KenticoCloudApiKey"].ConnectionString);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", System.Configuration.ConfigurationManager.AppSettings["KenticoCloudApiKey"]);  
+               // .Add("Authorization", "Bearer " + System.Configuration.ConfigurationManager.ConnectionStrings["KenticoCloudApiKey"].ConnectionString);
             client.DefaultRequestHeaders.Accept.
                 Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-            var response = client.PostAsync("https://manage.kenticocloud.com/projects/19eca161-c9c6-00ac-6bc5-822ae7351b73/items", new StringContent(body));
+            
+            var response = await client.PostAsync("https://manage.kenticocloud.com/projects/19eca161-c9c6-00ac-6bc5-822ae7351b73/items", new StringContent(body));
         }
 
     }

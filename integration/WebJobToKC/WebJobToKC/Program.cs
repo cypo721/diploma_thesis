@@ -25,6 +25,7 @@ namespace WebJobToKc
             // Set this immediately so that it is used by all requests.
             ServicePointManager.DefaultConnectionLimit = Int32.MaxValue;
             config.Queues.MaxPollingInterval = TimeSpan.FromSeconds(15);
+            config.UseServiceBus();
             var host = new JobHost(config);
             //The following code ensures that the WebJob will be running continuously
             host.RunAndBlock();
