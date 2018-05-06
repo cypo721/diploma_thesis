@@ -62,9 +62,9 @@ namespace WebJobToKc
         //  "createdAt": "2018-04-07T21:10:41.798Z",
         //  "lastModifiedAt": "2018-04-07T21:10:41.798Z"
         //}
+        // Set KenticoCloudApiKey in App.config in AppSettings to run this job
         public static async Task ProcessQueueMessage([ServiceBusTrigger("posttokc")] string message, TextWriter log)
         {
-
             log.WriteLine(message);
             JObject o = JObject.Parse(message);
             string id = (string)o.SelectToken("$.productProjection.id");
@@ -88,7 +88,7 @@ namespace WebJobToKc
             log.WriteLine(id + " " + name + " " + type);
 
             string body = "{ " +
-                                "\"name\": \"" + name + "\"," +
+                                "\"name\": \"" + id + "\"," +
                                 "\"type\": { " +
                                             "\"codename\": \"" + type + "\"" +
                                 "}," +

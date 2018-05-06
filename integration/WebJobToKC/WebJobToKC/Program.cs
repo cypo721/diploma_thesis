@@ -13,7 +13,7 @@ namespace WebJobToKc
     class Program
     {
         // Please set the following connection strings in app.config for this WebJob to run:
-        // AzureWebJobsDashboard and AzureWebJobsStorage
+        // AzureWebJobsDashboard and AzureWebJobsStorage and AzureWebJobsServiceBus
         static void Main()
         {
             var config = new JobHostConfiguration();
@@ -27,21 +27,10 @@ namespace WebJobToKc
             config.Queues.MaxPollingInterval = TimeSpan.FromSeconds(15);
             config.UseServiceBus();
             var host = new JobHost(config);
+ 
             //The following code ensures that the WebJob will be running continuously
             host.RunAndBlock();
-            //var host = new JobHost();
-            //host.CallAsync(typeof(Program).GetMethod("CreateQueueMessage"), new { value = "Hello world!" });
         }
-
-        //[NoAutomaticTrigger]
-        //public static void CreateQueueMessage(
-        //    TextWriter logger,
-        //    string value,
-        //    [Queue("posttokc")] out string message)
-        //{
-        //    message = value;
-        //    logger.WriteLine("creating queue message: ", message);
-        //}
 
     }
 }
