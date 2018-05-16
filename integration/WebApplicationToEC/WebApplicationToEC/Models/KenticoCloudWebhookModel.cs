@@ -6,9 +6,9 @@ using Newtonsoft.Json;
 
 namespace WebApplicationToEC.Models
 {
-    /*
-     * Model which is sended with webhook call, when product in Kentico Cloud change state.
-     */
+    /// <summary>
+    /// Model which is send with webhook call, when product in Kentico Cloud change state.
+    /// </summary>
     public class KenticoCloudWebhookModel
     {
         [JsonProperty("message")]
@@ -18,6 +18,9 @@ namespace WebApplicationToEC.Models
         public Data Data { get; set; }
     }
 
+    /// <summary>
+    /// Message with information about operation of item in Kentico Cloud
+    /// </summary>
     public class Message
     {
         [JsonProperty("id")]
@@ -45,6 +48,9 @@ namespace WebApplicationToEC.Models
         public Taxonomy[] Taxonomies { get; set; }
     }
 
+    /// <summary>
+    /// Informations about item which was changed
+    /// </summary>
     public class Item
     {
         [JsonProperty("language")]

@@ -10,13 +10,12 @@ namespace WebApplicationToEC
         public static void Register(HttpConfiguration config)
         {
             // Web API configuration and services
-
             // Web API routes
             config.MapHttpAttributeRoutes();
 
             config.Routes.MapHttpRoute(
                 name: "PublishToEcApi",
-                routeTemplate: "api/publish"
+                routeTemplate: "api/{controller}"
             );
         }
     }
