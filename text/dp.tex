@@ -1,0 +1,704 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% I, the copyright holder of this work, release this work into the
+%% public domain. This applies worldwide. In some countries this may
+%% not be legally possible; if so: I grant anyone the right to use
+%% this work for any purpose, without any conditions, unless such
+%% conditions are required by law.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[
+  printed, %% This option enables the default options for the
+           %% digital version of a document. Replace with `printed`
+           %% to enable the default options for the printed version
+           %% of a document.
+  table,   %% Causes the coloring of tables. Replace with `notable`
+           %% to restore plain tables.
+  lof,     %% Prints the List of Figures. Replace with `nolof` to
+           %% hide the List of Figures.
+  nolot,     %% Prints the List of Tables. Replace with `nolot` to
+           %% hide the List of Tables.
+  twoside,  
+  %% More options are listed in the user guide at
+  %% <http://mirrors.ctan.org/macros/latex/contrib/fithesis/guide/mu/fi.pdf>.
+]{fithesis3}
+%% The following section sets up the locales used in the thesis.
+\usepackage[resetfonts]{cmap} %% We need to load the T2A font encoding
+\usepackage[T1,T2A]{fontenc}  %% to use the Cyrillic fonts with Russian texts.
+\usepackage[
+  slovak %% By using `czech` or `slovak` as the main locale
+                %% instead of `english`, you can typeset the thesis
+                %% in either Czech or Slovak, respectively.
+  %%german, russian, czech, english %% The additional keys allow
+]{babel}        %% foreign texts to be typeset as follows:
+%%
+%%   \begin{otherlanguage}{german}  ... \end{otherlanguage}
+%%   \begin{otherlanguage}{russian} ... \end{otherlanguage}
+%%   \begin{otherlanguage}{czech}   ... \end{otherlanguage}
+%%   \begin{otherlanguage}{slovak}  ... \end{otherlanguage}
+%%
+%% For non-Latin scripts, it may be necessary to load additional
+%% fonts:
+\usepackage{paratype}
+\def\textrussian#1{{\usefont{T2A}{PTSerif-TLF}{m}{rm}#1}}
+%%
+%% The following section sets up the metadata of the thesis.
+\thesissetup{
+    date          = \the\year/\the\month/\the\day,
+    university    = mu,
+    faculty       = fi,
+    type          = mgr,
+    author        = Bc. Patrik Cyprian,
+    gender        = m,
+    advisor       =  RNDr. Jaroslav Pelikán{,} Ph.D.,
+    title         = {Elektronické obchodování pro Kentico Cloud},
+    TeXtitle      = {Elektronické obchodování pro Kentico Cloud},
+    keywords      = {Kentico Cloud, CMS, API, Headless CMS, elektronické obchodnovanie, webová aplikácia, JavaScript, CommerceTools, ...},
+    TeXkeywords   = {Kentico Cloud, CMS, API, Headless CMS, elektronické obchodnovanie, webová aplikácia, JavaScript, CommerceTools, \ldots},
+    assignment 	  = {C:/MUNI/mgr/sem4/is_tisk.pdf,
+   C:/MUNI/mgr/sem4/Prohlaseni_autora_skolniho_dila_v3.pdf},
+}
+\thesislong{thanks}{
+    Rád by som sa poďakoval spoločnosti Kentico Software s.r.o., hlavne pánovi Jakubovi Oravcovi za všetky konzultácie, rady a vysvetlenia, ktoré mi boli poskytnuté pri tvorbe tejto diplomovj práce. Taktiež by som sa rád poďakoval môjmu vedúcemu RNDr. Jaroslavovi Pelikánovi, Ph.D. za čas a pomoc pri práci.
+    
+    Tiež sa chcem poďakovať mojej rodine a priateľke Kataríne za ich lásku a trpezlivosť, pretože vždy stáli pri mne a podporovali ma.
+}
+\thesislong{abstract}{Práca sa zaoberá problematikou elektronického obchodovania a systémami na správu obsahu. Teoretická časť definuje elektronické obchodovanie a jeho kategórie a popisuje jednotlivé druhy systémov na správu obsahu. Cieľom práce je integrácia systému na správu obsahu Kentico Cloud s vybraným riešením elektronického obchodovania. Funkčnosť integrácie je prezentovaná pomocou jednoduchého eshopu.
+}
+
+%% The following section sets up the bibliography.
+\usepackage[              %% When typesetting the bibliography, the
+  backend=biber,          %% `numeric` style will be used for the
+  style=iso-numeric,      %% entries and the `numeric-comp` style
+  citestyle=numeric-comp, %% for the references to the entries. The
+  sorting=none,           %% entries will be sorted in cite order.
+  sortlocale=auto   
+%  bib=refs.bib      %% For more unformation about the available
+]{biblatex}               %% `style`s and `citestyles`, see:
+%% <http://mirrors.ctan.org/macros/latex/contrib/biblatex/doc/biblatex.pdf>.
+\addbibresource{refs.bib} %% The bibliograpic database within
+                          %% the file `example.bib` will be used.
+\usepackage{makeidx}      %% The `makeidx` package contains
+\makeindex                %% helper commands for index typesetting.
+%% These additional packages are used within the document:
+\usepackage{paralist}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{url}
+\usepackage{menukeys}
+\makeatletter\thesis@load
+\makeatletter
+\def\thesis@blocks@thanks{%
+\ifx\thesis@thanks\undefined\else
+\thesis@blocks@clear
+\begin{alwayssingle}%
+\chapter*{\thesis@@{thanksTitle}}%
+\thesis@thanks
+\end{alwayssingle}%
+\fi}
+\makeatother
+\begin{document}
+\chapter{Úvod}
+ Odvetvie elektronického obchodu a marketingu je jedno z najdynamickejšie rastúcich odvetví v posledných rokoch. Zákazníci menia svoje spôsoby nakupovania a kladú čoraz väčšie očakávania na konzistentné a koherentné skúsenosti naprieč rôznymi prístupovými bodmi k~elektronickému obchodovaniu.
+ 
+ Druhá kapitola približuje teoretické základy elektronického obchodovania ako aj jeho katégorie. Jedna z podkapitol sa zaoberá vývojom a nastupujúcimi trendmi v tejto oblasti.
+ 
+ Nasledujúca kapitola definuje architektúry systémov na správu obsahu a popisuje detaily a rozdiely medzi nimi. Štvrtá kapitola popisuje konkrétny systém na správu obsahu - Kentico Cloud. Približuje jeho hlavné architektonické rysy, opisuje dostupné API a pridáva výhody a nevýhody,  kedy je dobré si tento systém vybrať a použiť. Na záver sa tu nachádza porovnanie so starším produktom.
+ 
+ Cieľom diplomovej práce bolo preskúmanie existujúcich riešení pre elektronické obchodovanie a následne jedno zvolené riešenie integrovať so systémom Kentico Cloud. Toto porovnanie jednotlivých riešení elektronického obchodovania sa nachádza v piatej kapitole. V~závere kapitoly je vybrané jedno konkrétne riešenie a popísané jeho výhody a nevýhody. 
+ 
+ Posledné tri kapitoly sa zaoberajú návrhom prezentačnej vstrvy - eshopu a rozdelením dát do systému Kentico Cloud a do riešenia elektronického obchodovania. Posledá kapitola popisuje prácu s datámi a~jednotlivými systémami.
+
+
+
+\chapter{Elektonické obchodovanie}
+Elektronický obchod (biznis) zahŕňa všetky činnosti, ktoré su vykonávané spoločnosťami (firmami) pri predaji a kúpe produktov a služieb prostredníctvom komunikačných technológií a počítačov. V širšom zmysle pod elektronické obchodovanie spadá online nakupovanie, automatizácia predajných síl, dodávanie zdrojov (produktov), elektronické platobné systémy, webová reklama a riadenie objednávok \cite{ec1}. \\
+Dôležitou súčasťou elektronického obchodovania je flexibilita počítačových sietí a dostupnosť internetu, ktorý majú v dnešnej dobe zákazníci v podstate neustále k dispozícii.
+
+\section{Komponenty elektronického obchodovania}
+Vplyvom rozširovania a zlepšovania technológií sa z jednoduchých systémov pre elektronické obchodovanie stali moderné systémy poskytujúce rozličnú a komplexnú funkcionalitu ako:
+\begin{itemize}
+ \item Elektronické platby - sem patria mikroplatby, digitálne tokeny (známky), digitálne (elektronické) peniaze, kreditné a debetné kartové systémy.
+ \item Vyhľadávače - vyhľadávanie na základe kľúčových slov alebo reťazcov.
+ \item Inteligentní agenti - softvér, ktorý je možné spustiť na iných počítačoch a je schopný robiť nezávislé rozhodnutia v mene svojho tvorcu. Používajú sa na získavanie cenových ponúk, vyhľadávanie informácií, vyjednávanie nákupov a podobne \cite{ec2}.
+ \item Manažovanie vzťahu so zákazníkom - zákazník dostáva odporúčania na produkty alebo informácie na základe jeho predchádzajúcich návštev systému. Zohľadňujú sa prezerané a vyhľadávané produkty, kategórie, vlastnosti a ďalšie veci.
+\end{itemize}
+\section{Vývoj a nastupujúce trendy}
+Predchodcom dnešných moderných systémov na elektronické obchodovanie boli systémy elektronickej výmeny dát (Elektonic data Interchange - EDI). Spoločnosti, ktoré boli schopné elektronickej výmeny dát, si medzi sebou posielali rôzne dokumenty ako napríklad objednávky a faktúry. Tieto dokumety mali špecifikované elektronické formáty, takže obe strany, ktoré si vymieňali dáta, vedeli ako presne tieto dáta interpretovať a tak nemohlo prísť k žiadnym nezrovnalostiam.
+Postupným vývojom technológií a internetu sa systémy na elektronické obchodovanie dostali až do podoby, v akej ich poznáme dnes, čo prinieslo množstvo výhod:
+\begin{itemize}
+ \item eliminácia chýb vstupných dát,
+ \item efektivita nákladov,
+ \item rýchla odozva a prístup,
+ \item zväčšenie priestoru a možností na obchodovanie,
+ \item kontrola objednávok,
+ \item väčšia spokojnosť zákazníkov \cite{ec2}.
+\end{itemize}
+
+V súčasnej dobe sú hlavnými výzvami v elektronickom obchodovaní schopnosť doručiť obsah prostredníctvom rôznych digitálnych kanálov a daný obsah aj prispôsobiť konkrétnemu zákazníkovi. V~dnešnom svete bohatom na digitálne kanály, získavajú konkurenčnú výhodu tí obchodníci, ktorí sú schopní synchronizovať fyzický a digitálny svet a doručovať ponuky rôznymi kánalmi ako sú weby, mobilné aplikácie, inteligentné hodinky a televízie, virtuálna realita a ďalšie \cite{trends1}. Digitálne mobilné zariadenia, ako sú inteligentné telefóny a hodinky, zohrávajú dôležitú úlohu pri vytváraní bezproblémových skúseností. Obchodníci začínajú používať tieto zariadenia na lepší prístup k spotrebiteľským údajom a personalizovanému marketingu \cite{trends2}.
+\newpage
+\section{Kategórie elektronického obchodovania}
+V súčasnej dobe poznáme tieto kategórie elektronického obchodovania:
+\begin{itemize}
+	\item Business-to-Business (B2B) - typ obchodovania obchodník s obchodníkom. Tento druh zahŕňa všetky transakcie medzi jednotlivými obchodníkmi, služby dodávania tovaru a podobne. Vďaka používaniu elektronického obchodovania ušetria obchodníci množstvo finančných zdrojov a času. Ďalšou výhodou je, že obchodníci môžu veľa procesov automatizovať a tým predísť chybám \cite{ec1}. Hlavné procesy potrebné k  udržiavaniu trhu sú:
+	\begin{enumerate}
+	 \item smerovanie a schvaľovanie požiadavkov,
+	 \item vyhľadávanie dodávateľov,
+	 \item párovanie objednávok,
+	 \item plnenie zásob,
+	 \item vyúčtovanie,
+	 \item manažovanie obsahu \cite{ec2}.
+	\end{enumerate}
+	
+	\item Business-to-Consumer (B2C) - typ obchodovania obchodník so zákazníkom. Obchodník predáva tovar a služby priamo zákazníkovi prostredníctvom elektronických kanálov \cite{ec1}. Predstavuje aktivity ako sú online nakupovanie, akcie a maloobchodný predaj \cite{ec2}.
+	\item Consumer-to-Consumer (C2C) - typ obchodovania zákazník so zákazníkom.  V obchodných transakciách vystupujú osoby individuálne a sprostredkovajú si tovar a služby prostredníctvom internetu a webových technológií \cite{ec1}. Na webových stránkach vystupujú zákazníci vo vzťahu predajca - kupujúci, kde predajca publikuje tovar, ktorý chce predať, a kupujúci mu predkladá cenovú ponuku, za ktorú by chcel tovar kúpiť \cite{ec2}.
+	\item Consumer-to-Business (C2B) - typ obchodovania zákazník s~obchodníkom. Zahŕňa individuality predavajúce obchodníkom \cite{ec1}.
+	\item Business-to-Government (B2G) - typ obchodovania obchodník so štátnou správou.
+	\item Government-to-Business (G2B) - typ obchodovania štátna správa s obchodníkom.
+	\item Consumer-to-Government (C2G) - typ obchodovania zákazník so štátnou správou.
+	\item Government-to-Consumer (G2C) - typ obchodovania štátna správa so zákazníkom.
+	\item Government-to-Government (G2G) - typ obchodovania medzi štátnymi správami.
+\end{itemize}
+
+
+
+
+\chapter{Systém na správu obsahu}
+Systém na správu obsahu (Content Management System - CMS) je softvérová aplikácia alebo skupina programov, ktoré sa používajú na vytváranie a spravovanie digitálneho obsahu. Pri väčšine týchto systémov je možné funkcionalitu prispôsobovať pomocou rôznych rozšírení a pluginov \footnote{plugin - zásuvný modul; softvér, ktorý pridáva funkcionalitu, ale nie je schopný pracovať samostatne.}.
+\section{Druhy systémov na správu obsahu}
+Existuje niekoľko architektonických prístupov, podľa ktorých sa momentálne vytvárajú systémy na správu obsahu.
+\subsection{Systém na správu obsahu - spojený}
+\begin{figure}[h]
+  \begin{center}
+        \includegraphics[]{C:/MUNI/mgr/sem4/tex/coupled2.png}
+  \end{center}
+  \caption{Architektúra systému na správu obsahu - spojený}
+  \label{fig:coupled}
+\end{figure}
+
+Systém na správu obsahu - spojený (Coupled CMS) je systém, ktorý sa stará o obe vrstvy - obsahovú aj prezentačnú. Je to klasický prístup, kedy sa jedno riešenie stará o všetku potrebnú funkcionalitu. 
+Výhodou tohto prístupu je ľahké nastavovanie a udržovanie systému, pretože všetko potrebné je na spoločnom mieste. Nevýhodami sú: 
+\begin{itemize}
+ \item kód je úzko prepojený s prezentačnou vrstvou, náročnejšia oprava vzniknutých chýb,
+ \item ťažšia škálovateľnosť - veľká aktivita na prezentačnej vrstve spomaľuje backend a naopak \cite{cmsGuide}.
+\end{itemize} 
+
+
+\subsection{Systém na správu obsahu - rozdelený}
+\begin{figure}[h]
+  \begin{center}
+        \includegraphics[]{C:/MUNI/mgr/sem4/tex/decoupled2.png}
+  \end{center}
+  \caption{Architektúra systému na správu obsahu - rozdelený}
+  \label{fig:decoupled}
+\end{figure}
+
+Model systému na správu obsahu - rozdelený (Decoupled CMS) poskytuje robustnejšiu architektúru, z čoho vyplýva lepšie rozdelenie kódu od obsahu. Výhodou tohto prístupu je vyššia výkonnosť a~lepšia škálovateľnosť. Nevýhodou je, že je potrebné udržiavať viac prostredí, čo zvyšuje náklady na infraštruktúru, licencie a podobne. Potenciálnym problémom je aj synchronizácia a to hlavne v prípade, keď užívatelia môžu pridávať svoj vlastný obsah \cite{cmsGuide}.
+
+\subsection{Systém na správu obsahu bez prezentačnej vrstvy}
+Systém na správu obsahu bez prezentačnej vrstvy (Headless CMS) je jedným z najnovších prístupov v tvorbe týchto systémov. Táto architektúra so sebou prináša množstvo výhod:
+\begin{itemize}
+	\item vystavené API \footnote{API - rozhranie pre programovanie aplikácií} dovoľuje distribuovať obsah pomocou rôznych digitálnych kanálov, 
+	\item je možné použiť ľubovolný jazyk a vývojový proces pri tvorbe webových alebo mobilných aplikácií,
+	\item kontrola nad celým životným cyklom aplikácie a dobrá škálovateľnosť.
+\end{itemize}
+
+Nevýhodou je, že celá prezentačná vrstva závisí na vývojárovi. Zo strany systému na správu obsahu nie je v tomto smere žiadna podpora, čo znamená, že niekedy je potrebné vyvinúť nejakú chýbajúcu funkcionalitu \cite{cmsGuide}.
+\begin{figure}[h]
+  \begin{center}
+        \includegraphics[]{C:/MUNI/mgr/sem4/tex/headless2.png}
+  \end{center}
+  \caption{Architektúra systému na správu obsahu bez prezentačnej vrstvy}
+  \label{fig:headless}
+\end{figure}
+
+
+\chapter{Produkt Kentico Cloud}
+Kentico Cloud je systém na správu obsahu, ktorý využíva architektúru bez prezentačnej vrstvy. Systém beží v cloude a využíva všetky jeho výhody ako sú flexibilita, efektívnosť, rýchlosť, škálovateľnosť a zaručená dostupnosť. Táto kapitola približuje základné črty a vlastnosti produktu Kentico Cloud.
+\begin{figure}[h]
+  \begin{center}
+        \includegraphics[width=90mm,height=80mm]{C:/MUNI/mgr/sem4/tex/arch.png}
+  \end{center}
+  \caption{Architektúra produktu Kentico Cloud \cite{cmsGuide}}
+  \label{fig:kc}
+\end{figure}
+
+\section{Architektúra}
+\subsection{Mikroslužby}
+Hlavným stavebným prvkom Kentico Cloudu sú mikroslužby. Mikroslužby sú malé samostatné služby, ktoré spolu pracujú. Každá služba má na starosti jednu funkcionalitu, ktorú sa snaží vykonávať čo najlepšie. Výhodami tohto prístupu sú pružnosť, jednoduché nasadenie a zameniteľnosť \cite{micro}. Architektúra mikroslužieb umožňuje spájať a poskytovať rôzne API od rozličných dodávateľov, čo značne uľahčuje integráciu systémov.
+\subsection{Sieť pre doručovanie obsahu}
+Sieť pre doručovanie obsahu (Content Delivery Network) je skupina geograficky rozmiestnených serverov, využívaných na časovo efektívnu distribúciu informácií, dát a obsahu (hlavne veľkých multimediálnych dát). Dáta zo zdrojového servera sú replikované na viacerých ďalších serveroch v rôznych častiach internetovej štruktúry. Týmto vzniká výhoda, že dáta doručované užívateľovi nemusia cestovať cez  veľa smerovačov, a tým sa zvyšuje rýchlosť odozvy medzi klientom a~serverom \cite{cdn}. 
+
+Sieť pre doručovanie obsahu je vybudovaná nad API produktu Kentico Cloud, aby boli naplno využité vlastnosti cloudu a veľký a~rozmanitý obsah systému na správu obsahu bol rýchlo doručovaný bez dlhých oneskorení. Globálne pokrytie sieťou pre doručovanie obsahu značne zvyšuje výkonnosť Kentico Cloudu oproti iným konkurenčným systémom.
+\begin{figure}[h]
+  \begin{center}
+        \includegraphics[width=100mm,height=60mm]{C:/MUNI/mgr/sem4/tex/cdn.png}
+  \end{center}
+  \caption{Sieť pre doručovanie obsahu \cite{cmsGuide}}
+  \label{fig:cdn}
+\end{figure}
+ 
+\section{Popis API, funkcie a vlastnosti}
+Kentico Cloud sa skladá z niekoľkých samostatne vystavených a fungujúcich API, ktoré sprostredkovávajú rôznu funkcionalitu systému na správu obsahu: 
+\begin{itemize}
+	\item API na doručovanie obsahu - Delivery API,
+	\item API na správu obsahu - Content Management API,
+	\item API na migráciu obsahu - Migration API,
+	\item API na personalizáciu obsahu - Personalization API,
+	\item API na sledovanie návštevníkov - Tracking API.
+\end{itemize}
+\subsection{API na doručovanie obsahu}
+API na doručovanie obsahu je REST\footnote{REST - Representational state transfer - API na prácu so stavom dát} API, poskytujúce iba operácie čítania, ktoré získavajú publikovaný obsah z projektov v Kentico Cloude. Toto API sa používa na získanie veľkého množstva obsahu, ktorý je kešovaný pomocou siete na doručovanie obsahu. API poskytuje dve možnosti prístupu k obsahu. Prvým je klasické získavanie publikovaného obsahu a druhým je získavanie nepublikovaného obsahu v podobe predbežného zobrazenia. Rozdiel medzi získavaním publikovaného a nepublikovaného obsahu je ešte v tom, že pri nepublikovanom obsahu je potrebné v požiadavke na server uviesť aj autorizačný kľúč \cite{delivery}. 
+
+Pomocou tohto API je možné získavať zoznamy a jednotlivé položky a taktiež informácie o type položky obsahu. Funkcionalita, ktorú je možné používať pri získavaní zoznamu položiek:
+\begin{itemize}
+	\item filtrovanie - filtrovanie je možné poďla systémových hodnôt, ale aj hodnôt elementov,
+	\item radenie - podľa rozličných atribútov,
+	\item stránkovanie - je možné získavať iba určité podmnožiny položiek, preskakovať a nastaviť maximum získaných položiek,
+	\item projekcia - získavanie iba určitých atribútov položiek.
+\end{itemize}
+\subsection{API na správu obsahu}
+API na správu obsahu je REST API, poskytujúce operácie čítania a~zápisu, ktoré získavajú, vytvárajú a modifikujú nepublikovaný obsah z projektov v Kentico Cloude. Pri vytváraní a modifikácii obsahu pracuje užívateľ vždy s najaktuálnejšími dátami. Toto API neslúži na získavanie a filtrovanie obsahu, pretože nie je na to optimalizované.
+
+Každá požiadavka musí byť autentizovaná pomocou kľúča. Kľúč pre API je vytvorený automaticky a je platný 90 dní. 
+Preferuje sa jednorázové spracovanie dát do systému pred dlhodobým pravidelným pridávaním dát. Každý užívateľ má na každom projekte v Kentico Cloude vygenerovaný svoj unikátny kľuč.
+
+Počet požiadaviek na API na správu obsahu je obmedzený v špecifikovaných časových úsekoch \cite{contentM}: 
+ \begin{itemize}
+	\item 10 požiadaviek za sekundu,
+	\item 400 požiadaviek za minútu,
+	\item 1500 požiadaviek za hodinu.
+\end{itemize}
+Každá požiadavka dostane odpoveď, či bola úspešne vykonaná. Pri vytváraní novej položky obsahu sú potrebné 3 atribúty: 
+\begin{itemize}
+	\item identifikátor projektu - project\_id,
+	\item meno položky - name,
+	\item typ položky obsahu - type.
+\end{itemize}
+\subsection{API na migráciu obsahu}
+API na migráciu obsahu je REST API, poskytujúce iba operácie čítania, ktoré získavajú obsah z projektov v Kentico Cloude. Toto API sa využíva na importovanie vytvorených položiek obsahu do iných systémov na správu obsahu. Pokiaľ je aktivované API na doručovanie obsahu, je lepšie ho použiť \cite{migra}.
+\subsection{API na personalizáciu obsahu}
+API na personalizáciu obsahu je REST API, poskytujúce iba operácie čítania, ktoré získavajú informácie o aktuálnom návštevníkovi aplikácie. Všetky požiadavky musia byť autentizované pomocou autentizačného kľúča.
+Funkcie API pracujú s identifikátorom špecifického návštevníka webu. Tento identifikátor je možné získať z cookie\footnote{cookie - malé množstvo dát uložené v prehliadači, slúžiace na idetifikáciu užívateľov \cite{cookie}} alebo pomocou javascriptovej funkcie \cite{pers}.
+\subsection{API na sledovanie návštevníkov}
+API na sledovanie návštevníkov je REST API, poskytujúce iba operácie zápisu. Umožňuje sledovať návštevníkov bez použitia javascriptového kódu. Požiadavky nie je potrebné autentizovať. Využíva sa väčšinou spolu s API na personalizáciu obsahu \cite{track}.
+
+\section{Multichannel a omnichannel}
+Pojmy multichannel a omnichannel súvisia s tým, ako sa obsah šíri pomocou rôznych kanálov a ako to celé vníma užívateľ.
+\subsection{Multichannel}
+Prístup multichannel známená, že zákazníci si môžu kupovať tovar prostredníctvom rôznych prístupových bodov, ako sú kamenné obchody, webové stránky, mobilné aplikácie alebo napríklad aj prostredníctvom telefónnych hovorov. Obchodníci, ktorý prevádzkujú viaceré tieto kanály využívajú multichannel biznis model.
+
+Multichannel marketing poskytuje zákazníkom voľbu. Hlavnou úlohou obchodníkov je dokázať ponúknuť zákazníkom spôsob nákupu, aký im najviac vyhovuje \cite{multi}.
+\subsection{Omnichannel}
+Omnichannel je stratégia založená na využití všetkých digitálnych kanálov súčasne \cite{omni}. Zákazníci majú tendenciu získavať informácie v kamenných obchodoch a zároveň dostávať dodatočné informácie zo svojich mobilných zariadení o ponukách a lepších cenách. Princíp je o poskytovaní konzistentných informácií a skúseností so značkou prostredníctvom rôznych kontaktných bodov - web, mobilné aplikácie či kamenné obchody.
+
+\begin{figure}[h]
+  \begin{center}
+        \includegraphics[width=110mm,height=55mm]{C:/MUNI/mgr/sem4/tex/chan2.png}
+  \end{center}
+  \caption{Multichannel a omnichannel \cite{chan}}
+  \label{fig:channels}
+\end{figure}
+
+\section{Kedy a prečo použiť systém na správu obsahu bez prezentačnej vrstvy}
+Systém na správu obsahu bez prezentačnej vrstvy je dobré použiť vtedy keď:
+\begin{itemize}
+	\item chceme vytvárať obsah pre viacero digitálnych kanálov, nie len klasický web, alebo očakávame pridávanie nových kanálov v~budúcnosti,
+	\item chceme vybudovať aplikácie pomocou architektúry mikro\-služieb,
+	\item chceme využiť všetky výhody softvéru ako služby poskytovanej vrámci cloudu,
+	\item ľudia z marketingu sú schopní adoptovať si omnichannel stratégiu obsahu.
+\end{itemize}
+Vďaka vystavenému API je jednoduché doručovať obsah ľubovoľným kanálom, na ľubovoľné zariadenie a na ľubovoľnú platformu. Kentico Cloud je možné použiť ako jedno miesto, kde sa bude uchovávať celý obsah, ku ktorému bude mať každý jednoduchý prístup \cite{cmsGuide}.
+Ďalšou výhodou je, že Kentico Cloud dokáže zaznamenávať a vyhodnocovať dáta o zákazníkoch a ich interakcií s obsahom, takže Kentico Cloud je určený aj pre marketingové záležitosti a personalizáciu obsahu.
+
+\begin{figure}[h]
+  \begin{center}
+        \includegraphics[width=120mm,height=65mm]{C:/MUNI/mgr/sem4/tex/kc.png}
+  \end{center}
+  \caption{Využitie Kentico Cloudu \cite{cmsGuide}}
+  \label{fig:kcuses}
+\end{figure}
+
+\section{Porovnanie so starším produktom}
+Predchodcom Kentico Cloudu bol produkt Kentico EMS, ktorý rieši danú problematiku úplne iným prístupom. Kentico EMS je all-in-one (všetko v jednom) platforma, vďaka ktorej sa užívateľ vyhne problémom s integráciou s ďalšími systémami. Celá funkcionalita je zabudovaná priamo v systéme, kde je možné si navoliť a nastaviť funkcie z~predvolenej ponuky \cite{kcold}. Medzi základné zabudované funkcie pa-tria: 
+\begin{itemize}
+	\item manažment webového obsahu - jazykové preklady, responzívne stránky, rôzne typy stránok,
+	\item elektronické obchodovanie - zľavy, varianty produktov, kalkulácia ceny doručenia,
+	\item online marketing - ponúka emailový marketing, automatizáciu, personalizáciu obsahu, A/B testovanie,
+	\item spolupráca na projektoch,
+	\item online komunita - blogy, fóra, integrácia so sociálnymi médiami, skupiny \cite{kcguide}.
+\end{itemize}
+\subsection{Výhody Kentico EMS}
+\begin{itemize}
+	\item Všetko je predpripravené - stačí si vybrať z dostupných možností a nastaviť si funkcionalitu podľa vlastného výberu a potrieb,
+	\item nie je potrebné mať technologické poznatky - vzhľadom na to, že nie je potrebné vyvíjať žiadnu funkcionalitu, môžu so systémom ľahko pracovať aj menej technicky zdatní užívatelia.
+	\item zabudovaná funkcionalita - systém priamo obsahuje fukncionalitu pre online marketing, elektronické obchodovanie a online komunity,
+	\item možnosť integrácie s pár určitými systémami,
+	\item neobmedzená podpora - tým, že užívateľ nevyvíja žiadnu vlastnú funkcionalitu a kód, je zaručená podpora a pomoc pre celý systém.
+\end{itemize}
+\subsection{Nevýhody Kentico EMS}
+\begin{itemize}
+	\item Všetko je predpripravené - nie je úplne možné vytvoriť si vlastnú funkcionalitu,
+	\item veľké a robustné riešenie - všetko je na jednom mieste, je to jedna platforma, ktorú má užívateľ k dispozícii aj keď v skutočnosti nepotrebuje všetky časti systému,
+	\item ťažšia migrácia systému,
+	\item nedajú sa naplno využiť možnosti cloudu,
+	\item nie je možné integrovať s úplne ľubovolným systémom.
+\end{itemize}
+
+Celkovo Kentico EMS ma iný prístup k riešeniu danej problematiky. Riešenie všetkého na jednom mieste odbremeňuje užívateľa od vývoja vlastného kódu, ale systém tým pádom stráca na flexibilite.
+
+Kentico Cloud prináša nový pohľad na danú problematiku. S vys-tavením API ponúka veľkú funkcionalitu, ktorú je možné využívať s rôznymi systémami. Architektúra mikroslužieb prináša produktu väčšiu flexibilitu, ktorú je možné dobre využívať v podstredí cloud a~získať tým ďalšie výkonnostné výhody.
+\chapter{Riešenia elektronického obchodovania}
+V dnešnej modernej dobe je k dispozícii množstvo rozličných riešení elektronického obchodovania. Každé z nich pristupuje k danému problému iným spôsobom, inou architektúrou a návrhom celkového riešenia. Dôležitým kritériom pri výbere riešenia elektronického obchodovania je jeho architekúra. Je dôležité, aby tieto systémy taktiež ako Kentico Cloud poskytovali API pre svoju funkcionalitu a ideálne aby fungovali v cloude, pre lepší výkon a škálovateľnosť. Ďalšie kritéria, ktoré sú zohľadňované pri výbere riešenia sú:
+
+\begin{itemize}
+	\item model - jednotlivé entity, ktoré obsahuje riešenie elektronického obchodovania,
+	\item jazykové možnosti - či je systém pripravený na podporu rôznych jazykov a lokalizácie,
+	\item podpora mien - s lokalizáciou súvisí aj podpora rôznych mien a~práca s nimi,
+	\item SDK\footnote{SDK - Software Develpoment Kit, súbor nástrojov pre vývoj softvéru} - podpora rôznych SDK, hlavne takých, ktoré slúžia na vývoj webových aplikácií,
+	\item ceny - ceny za jednotlivé služby, porovnateľnosť s cenami služieb Kentico Cloudu,
+	\item spracovanie daní - globálne dane, možnosť rôznych nastavení daní,
+	\item manažment objednávok - spracovanie a realizácia objednávok produktov
+	\item zľavy a promočné kódy - možnosť použitia zliav a akcií na produkty
+	\item platobné brány - podpora platieb a platobných brán,
+	\item podpora CDN - rýchly prístup k dátam.
+\end{itemize}
+\section{Moltin}
+Jedným z riešení, ktoré svojou architektúrou a prístupom spĺňa kritéria je Moltin. Moltin je jednoduché a výkonné API, ktoré ponúka funkcionalitu elektronického obchodovania pre ľubovolné kanály a~zariadenia. Toto riešenie je flexibelné, agílne a vývoj aplikácií je rýchly s~menším množstvo kódu. Ďalšie vlastnosti sú: 
+\begin{itemize}
+	\item Model - obsahuje všetky dôležité entity ako sú produkty, objednávky, platby, košík, dane a ďalšie. Tieto entity sa dajú aj prispôsobovať a pridávať vlastné.
+	\item Jazykové možnosti a podpora mien - systém podporuje multijazyčnosť a rôzne druhy mien.
+	\item SDK - pripravené SDK sú pre JavaScript, Ruby, PHP, Swift a~Android.
+	\item Ceny - pre vývojárov je účet zadarmo s 30 000 operáciami. Potom  sú rôzne úrovne podľa operácií a funkcionality.
+	\item Spracovanie daní a manažment objednávok - systém podporuje dane, spracovanie objednávok, doručovanie a udržiavanie dostupnosti produktov. 
+	\item Zľavy a promočné kódy - nie je pripravená podpora.
+	\item Platobné brány - rozsiahla podpora platobných brán z celého sveta a pre rôzne štáty. Spojenie všetkých hlavných poskytovateľov platobných brán do jedného univerzálneho API.
+	\item Podpora CDN - riešenie má CDN v rôznych častiach sveta, takže prístup k dátam je rýchly.
+	\end{itemize}
+Na základe zhodnotenia všetkých vlasností je Moltin jedno z riešení elektronického obchodovania, podporujúce takmer všetku dôležitú funkcionalitu. Veľkou výhodou tohto riešenia je používanie CDN nad všetkými dátami a flexibilita dátového modelu. Toto riešenie je vhodné pre veľké nadnárodné spoločnosti, ako aj pre malých obchodníkov \cite{Moltin}.
+
+\section{OrderCloud}
+OrderCloud je platforma bez prezentačnej vrstvy vybudovaná nad cloudom, ktorá poskytuje RESTful API pre funkcionalitu elektronického obchodovania. Aplikácia sa dá integrovať s rôznymi ďalšími systémami a mikroslužbami. Zhrnutie vlastností OrderCloudu je:
+\begin{itemize}
+	\item Model - obsahuje všetky dôležité entity ako sú produkty, objednávky, platby, košík, dane, zľavy a ďalšie. Dátový model sa nedá prispôsobovať a je dôležité mu celkovo porozumieť.
+	\item Jazykové možnosti a podpora mien - neobsahuje priamu podporu multijazyčnosti.
+	\item SDK - pripravené SDK sú pre Phyton, Ruby, PHP, Swift, Android a C\#.
+	\item Ceny - záleží na množstve dát a potrebnej funkcionalite.
+	\item Spracovanie daní a manažment objednávok - systém podporuje dane, spracovanie objednávok, doručovanie a udržiavanie dostupnosti produktov. 
+	\item Zľavy a promočné kódy - sú pripravené riešenia pre promočné kódy na produkty.
+	\item Platobné brány - flexibilné platobné metódy. Využívanie zadaných informácií o platobných kartách k platbám za tovar.
+	\item Podpora CDN - OrderCloud riešenie nepoužíva CDN, čo znižuje výkon systému.
+		\end{itemize}
+OrderCloud je riešenie, ktoré spĺňa architektonické kritéria, ale má nedostatky multijazyčnosti a celkovej flexibility modelu. Taktiež chýbajúca CDN znižuje celkový výkon \cite{ordercloud}. Toto riešenie je rozsiahle a~vhodné aj pre veľké spoločnosti, avšak je dôležité aby dátový model vyhovoval danej spoločnosti, pretože ho nie je možné meniť a~prispôsobovať.
+
+\section{CommerceTools}
+CommerceTools je cloudovo orietovaná platforma pre elektronické obchodovanie poskytujúca API nad svojou funkcionalitou. Redukuje komplexicitu a zvyšuje flexibilitu a rýchlosť pri tvorbe aplikácií pre obchodníkov. Súhrn vlastností CommerceTools je:
+\begin{itemize}
+	\item Model - obsahuje všetky dôležité entity ako sú produkty, objednávky, platby, košík, dane, zľavy a ďalšie. Je možné vytvoriť typy produktov vďaka čomu je možné si model prispôsobiť podľa potrieb.
+	\item Jazykové možnosti a podpora mien - obsahuje podporu multijazyčnosti a tvorby cien s rôznymi menami.
+	\item SDK - pripravené SDK sú pre Java, JavaScript, PHP, Swift a C\#.
+	\item Ceny - záleží na množstve dát a konkrétnych potrebách aplikácie.
+	\item Spracovanie daní a manažment objednávok - systém podporuje dane pre rôzne krajiny, spracovanie objednávok, doručovanie a~udržiavanie dostupnosti produktov. 
+	\item Zľavy a promočné kódy - sú pripravené riešenia pre uplatňovanie zliav a promočných kódov.
+	\item Platobné brány - flexibilné platobné metódy a podpora platobných brán. Je predpripravená integrácia s poskytovateľmi platobných služieb. Je možné rozšíriť dátový model o ľubovoľnú platobnú metódu.
+	\item Podpora CDN - CDN je vybudovaná nad veľkými dátami ako sú obrázky.
+		\end{itemize}
+CommerceTools je riešenie, ktoré obsahuje všetku potrebnú fukncionalitu. Obsahuje potrebné SDK a model je dobre navrhnutý a taktiež flexibilný. Nedostatkom je, že CDN nie je vybudovaná nad všetkými dátami. Celkovo je CommerceTools riešenie elektronického obchodovania, ktoré je vhodné pre veľké spoločnosti ako aj malých obchodníkov \cite{CommerceTools}.
+\section{Commerce.js}
+Commerce.js je plnohodnotné API pre vývojárov a dizajnérov riešení elektronického obchodovania. Je to novšie riešenie, preto nemá veľkú podporu SDK. Je vydaná ešte iba prvá plnohodnotná verzia, takže existuje tu väčšie riziko výskytu chýb.
+\begin{itemize}
+	\item Model - model je jednoduchší oproti ostatným, ale obsahuje všetky dôležité entity ako sú produkty, objednávky, platby, košík, dane, zľavy a ďalšie. 
+	\item Jazykové možnosti a podpora mien - nie je pripravená podpora pre lokalizáciu. Obsahuje podporu pre 24 základných mien.
+	\item SDK - pripravené SDK sú pre JavaScript, PHP a Ruby.
+	\item Ceny - ceny sú percentá z transakcií a pravidelný mesačný poplatok.
+	\item Spracovanie daní a manažment objednávok - systém podporuje dane, spracovanie objednávok, doručovanie a udržiavanie dostupnosti produktov. 
+	\item Zľavy a promočné kódy - sú pripravené riešenia pre uplatňovanie zliav.
+	\item Platobné brány - integrácia s modernými platobnými bránami.
+	\item Podpora CDN - nie je vybudovaná CDN.
+\end{itemize}
+Commerce.js je menšie riešenie, ktoré splňuje základné požiadavky. Chýba tu však lepšia podpora lokalizácie a taktiež tu nie je vytvorená CDN nad dátami \cite{Commerce.js}. Toto riešenie nie je vhodné pre veľké nadnárodné spoločnosti, ktoré ponúkajú svoj tovar po celom svete, ale skôr pre malé lokálne obchody.
+\section{Snipchart}
+Snipchart je javascriptová platforma pre nakupovanie. Je pripravná na integráciu so systémami na správu obsahu. Je to flexibilné riešenie elektronického obchodovania, ktoré sa zameriava hlavne na nákupný košík eshopu.
+\begin{itemize}
+	\item Model - model  obsahuje všetky dôležité entity ako sú produkty, objednávky, platby, košík, zľavy a ďalšie.
+	\item Jazykové možnosti a podpora mien - je pripravené riešenie pre multijazyčnosť a meny, ale nie pre úplne všetky krajiny. Je možnosť si vytvoriť vlastné preklady.
+	\item SDK - pripravené SDK je iba pre JavaScript.
+	\item Ceny - cena je 2 \% z transakcií alebo je vytvorený individuálny plán.
+	\item Spracovanie daní a manažment objednávok - systém podporuje dane, spracovanie objednávok, doručovanie a udržiavanie dostupnosti produktov. 
+	\item Zľavy a promočné kódy - sú pripravené riešenia pre uplatňovanie zliav a promočných kódov.
+	\item Platobné brány - podpora určitých platobných brán, ktorých zoznam je uvedený v dokumentácii.
+	\item Podpora CDN - nie je vybudovaná CDN.
+\end{itemize}
+Podobne ako Commerce.js je to menšie riešenie s drobnými nedostatkami ako sú neúplnosť lokalizácie a chýbajúca CDN \cite{Snipchart}. Toto riešenie je vhodné pre stredne veľké spoločnosti.
+		
+\section{Ecwid}
+Ecwid je platforma pre elektronické obchodovanie, pomocou ktorej je jednoduché vytvoriť online obchod. Poskytuje API pre vývojárov, ktoré je zamerané na integráciu so sociálnymi sieťamia a systémami na správu obsahu.
+\begin{itemize}
+	\item Model - obsahuje základné entity ako sú produkty, objednávky, platby, košík, zľavy a ďalšie. 
+	\item Jazykové možnosti a podpora mien - obsahuje riešenie s detekciou jazyka, takže je tu možnosť lokalizácie.
+	\item SDK - nie sú pripravené žiadne SDK.
+	\item Ceny - ceny sa odvíjajú od počtu produktov. S vyššou cenou pribúda aj podpora rôznej funkcionality.
+	\item Spracovanie daní a manažment objednávok - systém podporuje  spracovanie objednávok, doručovanie a udržiavanie dostupnosti produktov. Podpora spracovania rôznych daní nie je dostatočná.
+	\item Zľavy a promočné kódy - sú pripravené riešenia pre uplatňovanie zliav.
+	\item Platobné brány - vlastná implementácia platieb. Má aj podporu pre viac ako 50 rozličných riešení platieb.	
+	\item Podpora CDN - nie je vybudovaná CDN.
+		\end{itemize}
+Ecwid je jednoduchšie riešenie, ktoré však neobsahuje dostatočnú funkcionalitu splňujúcu dané kritéria. Lokalizácia nie je úplne dobre vyriešená \cite{Ecwid}. Riešenie je vhodné pre malé až stredné spoločnosti.
+\section{Výber riešenia pre integráciu}
+Po zhodnotení všetkých nájdených potencionálnych možností elektronického obchodovania bolo pre praktickú prezentáciu integrácie zvolené riešenie CommerceTools. CommerceTools splňujú takmer všetky kladené požiadavky na riešenie elektronického obchodovania. Obsahujú všetky potrebné objekty, majú dobre spracovanú lokalizáciu a sú pripravený na globálnu implementáciu pomocou dostupných mien všetkých krajín a možnosťou nastavovať rôzne dane. Podpora platieb a platobných brán je tiež na vysokej úrovni. Jedinou chybičkou je, že CDN je vybudovaná iba nad obrázkovými dátami, avšak spomedzi možných riešení sa javí CommerceTools ako najvhodnejšie, preto je zvolené pre praktickú ukážku integrácie so systémom Kentico Cloud.
+\chapter{Integrácia}
+Obidva systémy integrácie sú samostane fungujúce systémy, avšak spolu vytvárajú jedno komplexné riešenie, ktoré sa dá použiť v rôznych prípadoch a prináša rôzne benefity. Výhody, ktoré prináša Kentico Cloud: 
+\begin{itemize}
+	\item Lokalizácia - systém je pripravený na preklad obsahu do ľubovolných jazykov. Nie je nutné prekladať každú položku do každého jazyka, ale kľudne môže byť obsah určený iba pre konkrétnu oblasť.
+	\item Pracovný postup - položky je možné mať v rôznych stavoch ako sú napríklad čakajúca na schávalenie alebo naplánované publikovanie. Je tak jednoduché prispôsobiť obsah ku konkrétnym akciám alebo udalostiam.
+ 	\item Sledovanie užívateľovej aktivity - Kentico Cloud dokáže záznamenávať aktivitu užívateľa v systéme a následne je možné na základe tejto aktivity zobrazovať personalizovaný obsah.
+ 	\item Množstvo dát - je možné tu uchovávať väčšie množstvo dát, rozsiahle popisy a galérie obrázkov. Vďaka vytvoreným API a~vybudovanej CDN sú dáta rýchlo dostupné po celom svete.
+\end{itemize}
+
+Výhody, ktoré prináša riešenie elektronického obchodovania:
+\begin{itemize}
+	\item Práca s cenami - systém je pripravený pracovať s rôznymi cenami pre ten istý produkt. Je možné nastavovať rôzne dane a iné poplatky pre produkty.
+	\item Varianty produktov - je možné vytvárať rôzne varianty produktov, ktoré sa líšia iba drobnými technickými detailmi.
+ 	\item Objednávky a tovar - systém elektronického obchodovania eviduje množstvo tovaru, ktoré je k dispozícii a spracováva objednávky. Je schopný zabezpečiť aj doručovanie tovaru.
+ 	\item Platby - sprostredkováva platby cez rôzne platobné brány.
+\end{itemize}
+
+Cieľom integrácie je teda vytvoriť systém, ktorý bude nie len spros-tredkovávať predaj tovaru, ale dokáže poskytovať rozmanitý obsah. Tento obsah je vytvaraný na jednom mieste v prostredí Kentico Cloud a na základe užívateľovej aktivity je možné tento obsah personalizovať a tým dosiahnuť lepšiu skúsenosť zákazníka so systémom.
+
+\section{Návrh integrácie}
+Jedna z praktických častí diplomovej práce je vyriešiť spôsob integrácie systému Kentico Cloud so zvoleným riešením elektronického obchodovania. Obidva systémy vystavujú API, ktoré je potrebné prepojiť. Spôsoby akými sa môže vytvoriť integrácia sú tri: 
+\begin{enumerate}
+	\item vytvoriť prepojenie v smere zo systému elektronického obchodovania do systému Kentico Cloud ale aj opačné prepojenie s~následným používaním API riešenia elektronického obchodovania
+	\item vytvoriť prepojenie v smere zo systému elektronického obchodovania do systému Kentico Cloud ale aj opačné prepojenie s~následným používaním oboch API
+	\item vytvoriť aplikáciu nad obomi API, s ktorou následne bude komunikovať prezentačná vrstva
+\end{enumerate}
+
+Všeobecne základom integrácie systému Kentico Cloud a riešenia elektronického obchodovania je synchronizácia produktov(položiek) v oboch systémoch. Je dôležité, aby v oboch systémoch bol rovnaký zoznam položiek a tieto položky bolo možné na základe nejakého atribútu spojiť v prezentačnej vrstve. Či sa bude využívať jedno API alebo oboje, záleží na veľkosti zoznamu produktov a požiadavkách na výkonnosť.
+
+Požiadavka na multijazyčnosť riešenia elektronického obchodovania nie je až taká nevyhnutná, pretože túto funkcionalitu dokáže zabezpečiť Kentico Cloud. Celý obsah o položkách by bol uložený v~Kentico Cloude a riešenie elektronického obchodovania by sa staralo iba o prácu s cenami a objednávkami a dáta a popisy by boli získavané z API Kentico Cloudu. 
+
+Tretí postup integrácie je vhodný v prípadoch, keď by sme cielili na kanály, ktoré nie sú až také tradičné alebo by sme vytvárali väčšie množstvo prezentačných vrstiev (web, mobilná aplikácia, inteligentné hodinky a ďalšie). V tomto prípade by bolo vhodné si dáta z oboch systémov spájať na jednom mieste a následne posielať jednotné dáta do všetkých vytvorených aplikácií.
+
+\subsection{Popis 1. postupu}
+\begin{figure}[h]
+  \begin{center}
+        \includegraphics[width=110mm,height=60mm]{C:/MUNI/mgr/sem4/tex/int11.png}
+  \end{center}
+  \caption{Nákres postupu 1}
+  \label{fig:integraation1}
+\end{figure}
+Prvý prístup sa zameriava na synchronizáciu produktov medzi systémami. Riešenie elektronického obchodovania je schopné posielať správy do registrovanej zbernice služieb\footnote{zbernica služieb (service bus) - prevádza základne operácie a komunikáciu pre softvérové aplikácie \cite{sb}}. Webjob \footnote{webjob - kód, ktorý sa vykoná na pozadí, je možné ho spustiť na základe určitej udalosti} si z tejto zbernice správy vyzdvihne, spracuje ich a pomocou požiadavky na API Kentico Cloud vytvorí v Kentico Cloude nový produkt s rovnakým menom. V opačném smere by synchronizácia prebiehala pomocou webhooku\footnote{webhook - webové spätné volanie, je spôsob ako upozorniť iné aplikácie o nových informáciach v reálnom čase \cite{webhook}}. Kentico Cloud je pomocou webhooku  schopné zavolať vytvorené webové API, ktoré pošle požiadavku na systém elektronického obchodovania o tom, že dáta o produkte na strane Kentico Cloudu sú nachystané a pošle tam nové dáta, ktoré boli pridané v~Kentico Cloude a tým pádom je celý produkt kompletne pripravený.
+
+Výsledný eshop by potom komunikoval iba so systémom elektronického obchodovania pomocou jeho API. Problém tohto prístupu je, že dáta z  Kentico Cloudu by sa duplikovali v systéme elektronického obchodovania. Ďalšou nevýhodou je, že by sa stratila sieť pre doručovanie obsahu, ktorá je vybudovaná nad API Kentico Cloudu, čiže by to malo za následok aj pokles výkonu eshopu. 
+
+\subsection{Popis 2. postupu}
+\begin{figure}[h]
+  \begin{center}
+        \includegraphics[width=110mm,height=68mm]{C:/MUNI/mgr/sem4/tex/int2.png}
+  \end{center}
+  \caption{Nákres postupu 2}
+  \label{fig:integration2}
+\end{figure}
+Prvý prístup sa zameriava na synchronizáciu produktov medzi systémami, tak že vytvára kompletné produkty v systéme elektronického obchodovania.  Druhý návrh je podobný, avšak zachováva obidve API systémov. Synchronizácia prebehne rovnakým spôsobom ako v prvom návrhu, avšak systém Kentico Cloud len upozorní riešenie elektronického obchodovania na to, že produkt je kompletný a~teda môže byť bez probémov publikovaný v eshope.
+
+Výhodou tohto prístupu je, že sa nebudú vytvárať žiadne duplikované dáta v jednom či druhom systéme. Taktiež v tomto návrhu budú obe siete pre doručovanie obsahu zachované a tým pádom sa zachová aj výkonnosť celej aplikácie.
+
+
+\subsection{Popis 3. postupu}
+\begin{figure}[h]
+  \begin{center}
+        \includegraphics[width=125mm,height=70mm]{C:/MUNI/mgr/sem4/tex/int3.png}
+  \end{center}
+  \caption{Nákres postupu 3}
+  \label{fig:integration3}
+\end{figure}
+Posledný návrh je úplne odlišný od prvých dvoch. Neprebieha tu vzájomná integrácia a synchronizácia systémov, ale bola by vytvorená nová aplikácia nad oboma API, ktorá by sa starala o túto funkcionalitu. Aplikácia by musela byť schopná prijať a spracovať informáciu zo systému elektronického obchodovania a vytvoriť produkt v Kentico Cloude. Tak isto by jej úlohou bolo upozoniť systém elektronického obchodovania o kompletnosti produktu v Kentico Cloude.
+
+Výhodou by bolo, že by vytvorila nové API zjednocujúce dve existujúce, takže by sa vývojárovi eshopu pracovalo lepšie s jedným API, z ktorého by dostal kompletné produkty. Taktiež by sa toto nové API mohlo pripraviť aj na netradičnejšie kanály, ktoré by potrebovali predávať špeciálne atribúty či informácie. 
+
+Nevýhodou je, že vytvorením nového API by sa stratili existujúce siete pre doručovanie obsahu, čo by malo za následok pokles výkonu, pričom pridaná hodnota aplikácie by nemusela byť veľká. Ďalšia vec je, že vytvoriť celú integráciu by bolo pracné a v danej situácii by to odstránilo iba zjednocovanie produktov z oboch API, čo pri dobre navrhnutej štruktúre dát nebude náročné spraviť priamo v implementácii eshopu.
+
+\section{Výber riešenia integrácie a jeho implementácia}
+Na základe zhodnotenia všetkých troch návrhov je pre implementáciu zvolený druhý prístup. Výhody tohto prístupu sú: 
+\begin{itemize}
+	\item zoznam produktov v oboch systémoch,
+	\item zachovanie siete pre doručovanie obsahu (výkonnosť),
+	\item priame využitie API systémov,
+	\item žiadne duplicity dát.
+\end{itemize}
+
+Nevýhody sú, že môže byť pri niektorých kanáloch náročnejšie impletovať niektoré funkcie súvisiace so sledovacím API a API na personalizáciu obsahu a že výsledný produkt so všetkými dátami sa vytvorí až v eshope.
+Postup implementácie je nasledovný:
+\begin{enumerate}
+	\item Registrácia service busu v systéme elektronického obchodovania. V service buse sa vytvorí fronta, do ktorej budú chodiť správy o~novo vytvorených produktoch.
+	\item Vytvorenie webjobu, ktorý spracuje správy z fronty. Je potreba nastaviť cestu k fronte a jej názov.
+	\item Registrovať webhook v Kentico Cloude, ktorý po dokončení produktu v Kentico Cloude pošle požiadavku na vytvorené webové API.
+	\item Webové API vytvorí požiadavku a upraví stav produktu v systéme elektronického obchodovania.
+\end{enumerate}
+
+\chapter{Návrh prezentačnej vrstvy - eshop}
+Dôležitou súčasťou práce je ukázať funkčnú integráciu medzi systémom Kentico Cloud a vybraým riešením elektronického obchodovania - CommerceTools. Ako príklad prezentačnej vrstvy je vytvorený jednoduchý eshop s niekoľkými položkami elektroniky. 
+
+Základným objektom Kentico Cloudu je položka (Content item - Obr. 7.1).
+
+\begin{figure}[h]
+  \begin{center}
+        \includegraphics[]{C:/MUNI/mgr/sem4/tex/kcItem.png}
+  \end{center}
+  \caption{Class diagram položky obsahu v Kentico Cloude}
+  \label{fig:kentico item}
+\end{figure}
+\begin{figure}[h]
+  \begin{center}
+        \includegraphics[]{C:/MUNI/mgr/sem4/tex/kcClass.png}
+  \end{center}
+  \caption{Class diagram typu obsahu v Kentico Cloude}
+  \label{fig:kentico class}
+\end{figure}
+
+Jednotlivé druhy položiek sa rozlišujú pomocou typu (type). Pomocou typov položiek je možné namodelovať konkrétny obsah. V~prípade eshopu na predaj elekotroniky sú vytvorené 3 typy položiek - \texttt{notebook, mobile phone} a \texttt{tablet}. Tieto položky obsahujú atribúty, ktoré sú zobrazene v class diagrame na Obr. 7.2. 
+
+
+Výhodou Kentico Cloudu je, že je možné vytvárať element (tak-zvaný Rich text element), kde je možné naformátovať  konkrétny vzhľad elementu, tak, ako by sa mal zobraziť potom na webovej stránke. Taktiež je výhodou, že atribúty nemusia byť všetky povinne vyplnené, takže je jednoduché modifikovanie typu produktu a pridávanie atri-bútov, s tým že nebude tento atribút potrebné spätne vyplniť pre všetky položky.
+
+ Čo sa týka riešenia elektronického obchodovania CommerceTools, tak základnym objektom je produkt. Obsahuje množstvo atribútov a~nie všetky sú povinné. Základné a často používané atribúty sú vypísané v class diagrame na Obr. 7.3. 
+ 
+ 
+ \begin{figure}[h]
+  \begin{center}
+        \includegraphics[]{C:/MUNI/mgr/sem4/tex/prod.png}
+  \end{center}
+  \caption{Základne atribúty produktu v CommerceTools}
+  \label{fig:produkt}
+\end{figure}
+
+\begin{figure}[h]
+  \begin{center}
+        \includegraphics[]{C:/MUNI/mgr/sem4/tex/ptype.png}
+  \end{center}
+  \caption{Typ produktu v CommerceTools}
+  \label{fig:produkt type}
+\end{figure}
+
+ Tak ako v Kentico Cloude tak aj v CommerceTools je potrebné rozlišovať medzi jednotlivými druhmi produktov. Na to slúži Produkt type, pomocou ktorého je možné pridať produktom ďalšie špecifické atribúty. Typy produktov použité v CommerceTools sú rovnaké ako v Kentico Cloude a to teda - \texttt{notebook, mobile phone} a \texttt{tablet.} Typ produktu obsahuje základne parametre, ktoré sa špecifikujú pri takýchto typoch zariadení. Jednotlivé druhy sa líšia len v jednom či dvoch atribútoch, ktoré sú konkrétnejšie pre daný typ zariadenia.
+
+
+
+
+\section{Rozdelenie dát do systémov}
+Dôležité je uvedomiť si, aký typ dát sa bude nachádzať v jednotlivých systémoch. CommerceTools je pripravené na rozsiahlejšiu funkcionalitu, ktorá je potrebná pri tvorbe eshopu. V CommerceTools budú uložené ceny, meny, dane a jednoduché parametre o zariadeniach. Funkcionalita starajúca sa o dané veci tam je už pripravená, takže výsledná aplikácia sa o túto funkcionalitu nemusí starať a bude zobrazovať iba získané dáta z CommerceTools.
+
+Kentico Cloud vďaka CDN, ktorá zabezpečuje výkon a rýchlosť doručenia dát, bude obsahovať väčšie dáta. Budú sa tu nachádzať popisy produktov, obrázky, galérie obrázkov a podobne. Systém Kentico Cloud je pripravený obsah o produktoch formátovať a pripraviť ho pre prezentáciu vo výslednej aplikácii. Je tu možné odkazovať z~jedného pruduktu na druhý, pripraviť rôzne kampane a akcie na produkty, takže tento systém prináša výhody z marketingového hľadiska. Obsahuje podporu pre sledovanie užívateľovej aktivity a následnú personalizáciu obsahu.
+
+\chapter{Implementácia a technológie}
+Implementácia je rozdelená do dvoch častí. Prvou z nich je integrácia systému Kentico Cloud s riešením elektronického obchodovania CommerceTools a druhou je prezentácia funkčnosti integrácie prostredníctvom jednoduchého eshopu.  
+Integrácia je rozdelená do dvoch častí, ktoré sú naprogramované v jazyku C\#. Prvá časť integrácie sa skladá z webjobu a zbernice služieb. Po vytvorení produktu v CommerceTools je poslaná správa do zbernice o tejto udalosti. Webjob správu zo zbernice spracuje, získa potrebné dáta (meno, id a typ produktu) a vytvorí pomocou Content Management API tento produkt v systéme Kentico Cloud. Po vyplnení atribútov v Kentico Cloude a~následom publikovaní produktu, webhook zavolá vytvorené webové API, ktoré sa postará o publikovanie produktu aj v riešení elektronického obchodovania CommerceTools. Tento postup je trochu zložitejší lebo je potrebné spraviť niekoľko operácií: 
+\begin{enumerate}
+	\item získanie produktu pomocou Kentico Delivery API, kvôli id atribútu pre spárovanie s produktom v CommerceTools,
+	\item získanie autentizačného tokenu pre CommerceTools, kvôli posielaniu požiadavkiek na API CommerceTools,
+	\item získanie produktu z CommerceTools, pretože pre publikovanie je potrebná aktuálna verzia daného produktu,
+	\item publikovanie produktu v systéme elektronického obchodovania CommerceTools.
+\end{enumerate}
+
+Zbernica a webová aplikácia obsahujúca webjob aj web API sú nasadené a bežiace v cloude Microsoft Azure. Vďaka profilu publikovania, ktorý je dostupný pri vytvorení webovej aplikácie v postredí Microsoft Azure, bolo nasadenie z vývojového prostredia jednoduché. Tento profil sa nastavil aplikácii vo vývojovom prostredí a potom prostredie presne vedelo čo a kam nasadiť. Taktiež sú v prostredí Mi-crosoft Azure uložené id projektov a kľúče potrebné pre autentizáciu s~Content Management API Kentico Cloudu a s API CommerceTools. 
+
+Prezentačná vrstva (eshop) je naprogramovaná pomocou java-scriptovej knižnice React\footnote{React - moderná javascriptová knižnica pre budovanie užívateľských rozhraní}.
+
+
+\section{Zhodnotenie problémov pri integrácii}
+Celkovo pri implementácii integrácie nenastali zložitejšie problémy. Dokumentácie oboch systémov sú napísané kvalitne a~dostatočne a dajú sa tam dohľadať všetky potrebné informácie pre implementáciu.
+
+Zo strany Kentico Cloudu bol najväčší problém, kde ukladať id produktu, pod ktorým sa nachádza produkt v systéme CommerceTools. Položky majú pripravnený atribút \texttt{external\_id}, avšak tento atribút nie je prístupný prostredníctvom Delivery API. Riešenie daného problému spočíva vo vytvorení elementu v produktových typoch, kde sa bude toto id uchovávať. Proces vytváranie položky je potom o~niečo zložitejší, pretože najskôr je potrebné vytvoriť položku v Kentico Cloud a následne vytvoriť jej variantu, kde už je možné nastavovať hodnoty konkrétnym atribútom položky.
+
+Malý nedostatok obsahuje aj Content Management API Kentico Cloudu. Autentizačný token potrebný pre vytváranie požiadavkov má platnosť iba 3 mesiace a po uplynutí tejto doby je potrebné ho znovu vygenerovať. Nový token je potrebné následne pridať do konfigurácie integrácie.
+
+Malou nevýhodou CommerceTools je, že úplne každú požiadavku treba autentizovať, aj keď ide iba o čítanie dát.
+
+\chapter{Užívateľské scenáre}
+Celý postup práce užívateľa s výsledným systémom má niekoľko krokov:
+\begin{enumerate}
+	\item import produktov do CommerceTools,
+	\item vyplnenie dát v Kentico Cloude,
+	\item korektúra a schválenie dát v Kentico Cloude,
+	\item využívanie modulárneho obsahu.
+\end{enumerate}
+
+\section{Import produktov}
+Na začiatku musí užívateľ vytvoriť/importovať zoznam produktov do riešenia elektronického obchodovania CommerceTools. Nie je potrebné výplniť hneď všetky dáta, pretože pokiaľ produkt neprejde do stavu \texttt{published}, tak nie je zobrazovaný vo výslednom eshope. Užívateľ tu môže vytvárať rôzne varianty daného produktu či už podľa vzhľadu, alebo technických parametrov zariadenia.
+
+\begin{figure}[h]
+  \begin{center}
+        \includegraphics[width=125mm,height=60mm]{C:/MUNI/mgr/sem4/tex/ct3.png}
+  \end{center}
+  \caption{Dashboard produktov v CommerceTools \cite{ecdash}}
+  \label{fig:dashboard CT}
+\end{figure}
+\section{Vyplnenie dát v Kentico Cloude}
+Po vyplnení dát v CommerceTools sa automaticky dáta spracujú a~rovnaké produkty sa vytvoria v KenticoCloude. Produkty sú tu pripravené na doplnenie ďalších dát, hlavne marketingových. Taktiež sa tu vytvoria jednotlivé jazykové verzie. Vďaka jednotlivým pracovným stavom je jednoduché orientovať sa medzi produktami orientovať a~zistiť, kde čo ešte chýba.
+\begin{figure}[h]
+  \begin{center}
+        \includegraphics[width=128mm,height=45mm]{C:/MUNI/mgr/sem4/tex/kcdash.png}
+  \end{center}
+  \caption{Dashboard produktov v Kentcio Cloude \cite{kcdash}}
+  \label{fig:dashboard CT}
+\end{figure}
+
+
+\section{Korekúra a schvaľovanie}
+Kentico Cloud je pripravený na rôzne administratívne procesy pri vytváraní a publikovaní výsledného obsahu. Po vytvorení výsledného obsahu produktu je možné ho poslať na schválenie a kontrolu ďalším osobám a predísť tak chybám a ďalším nedostatkom a tým aj ušetreniu času pri opravovaní obsahu po publikovaní. Je možné pridať aj vlastné nové stavy, ktoré užívateľ potrebuje pri procese vytvárania nového obsahu poprípade aj upraviť existujúce stavy podľa potrieb. Ako vidno na Obr. 9.3 tak základné preddefinové stavy sú návrh (\texttt{draft}), kontrola (\texttt{review}), pripravené na publikovanie (\texttt{ready to publish}), naplánované publikovanie (\texttt{scheduled}) a publikované (\texttt{published}).
+\begin{figure}[h]
+  \begin{center}
+        \includegraphics[width=120mm,height=85mm]{C:/MUNI/mgr/sem4/tex/wf.png}
+  \end{center}
+  \caption{Pracovné stavy jednotlivých položiek v Kentico Cloude \cite{kcdash}}
+  \label{fig:produkt type}
+\end{figure}
+
+
+\section{Modulárny obsah}
+Veľkým prínosom pre užívateľov je modulárny obsah Kentico Cloudu. Modulárny obsah známená, že tento obsah je možné použiť na viacerých miestach, pri viacerých produktoch. Užívateľ si vytvorí nejakú položku, napríklad kategóriu, ktorej pridá nejaké atribúty a popisy a môže ju použiť pri viacerých produktoch. Výhody sú, že obsah je možné znovu použiť a netreba ho duplikovať a vytvárať viackrát pre každý produkt. Následne zmeny v modulárnom obsahu sa automaticky premietnu do všetkých produktov, kde sa tento obsah nachádza. 
+Výhody modulárneho obsahu sú aj pri lokalizácii, že text stačí preložiť iba na jednom mieste.
+
+Výhodné použitie modulárneho obsahu može byť z marketingového hľadiska. Užívateľ si pripraví rôzne položky pre rozličné udalosti a akcie. Tieto položky sa budú pri produktoch objavovat vždy na jednom mieste vo webovej aplikácii a ich nahradenie bude jednoduché lebo budú súčasťou výsledného produktu ako modulárny obsah a~bude možné ich vymeniť jeden za druhý.
+
+\begin{figure}[h]
+  \begin{center}
+        \includegraphics[]{C:/MUNI/mgr/sem4/tex/mod.png}
+  \end{center}
+  \caption{ Príklad modulárneho obsahu \cite{kcdash}}
+  \label{fig:modular}
+\end{figure}
+
+\chapter{Záver}
+Cieľom diplomovej práce bolo preskúmať existujúce riešenia elektronického obchdovania a vytvoriť integráciu medzi systémom Kentico Cloud a vybraným riešením elektronického obchodovania. Systémy sa navzájom upozorňujú o dôležitých zmenách a výsledná integrácia je prezentovaná pomocu jednoduchého eshopu, kde sa zobrazujú dáta o produktoch z obidvoch systémov.
+
+Integrácia je nasadená v cloude Microsoft Azure. Zdrojové kódy sú k dispozícii spoločnosti Kentico Software s.r.o. 
+
+Vývoj bol priebežne a pravidelne konzultovaný so spoločnosťou Kentico Software s.r.o. a pripomienky a nedostatky postupne sprácovávané.
+
+Aplikácia je dôkladne zdokumentovaná a triedy boli navrhované tak aby sa dali jednoducho ďalej rozšíriť.
+
+Pri väčšom množstve dát (zákazníkov, ktorí návštívili eshop) by v budúcnosti mohla byť pridaná funkcionalita personalizovaného obsahu.
+
+\printbibliography[heading=bibintoc]
+
+%\bibliographystyle{ieeetr}
+%\bibliography{refs}
+{\csname captions\languagename\endcsname %% Temporarily override
+%% the BibLaTeX localization with the original babel definitions.
+\makeatletter %% Use the correct localization of the quotations.
+  \thesis@selectLocale{\thesis@locale}\makeatother
+%\printbibliography[heading=bibintoc]} %% Print the bibliography.
+
+
+\makeatletter\thesis@blocks@clear\makeatother
+\phantomsection %% Print the index and insert it into the
+\addcontentsline{toc}{chapter}{\indexname} %% table of contents.
+\printindex
+
+\appendix %% Start the appendices.
+\chapter{Zdrojové kódy}
+Zdrojové kódy aplikácie sú k dispozícii v Infomačnom Systéme Masarykovej Univerzity.
+
+
+\end{document}
