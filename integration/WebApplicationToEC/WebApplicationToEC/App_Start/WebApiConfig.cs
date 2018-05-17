@@ -17,6 +17,14 @@ namespace WebApplicationToEC
                 name: "PublishToEcApi",
                 routeTemplate: "api/{controller}"
             );
+
+            config.Routes.MapHttpRoute(
+                name: "AuthToCommerceTools",
+                routeTemplate: "api/{controller}"
+            );
+
+            var appXmlType = config.Formatters.XmlFormatter.SupportedMediaTypes.FirstOrDefault(t => t.MediaType == "application/xml");
+            config.Formatters.XmlFormatter.SupportedMediaTypes.Remove(appXmlType);
         }
     }
 }

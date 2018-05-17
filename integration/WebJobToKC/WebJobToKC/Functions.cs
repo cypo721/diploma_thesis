@@ -82,15 +82,27 @@ namespace WebJobToKc
             if (operation.Equals("ProductCreated"))
             { 
                 // getting type of product in CommerceTools
+                //switch (typeId)
+                //{
+                //    case ("3165127d-dfeb-4a93-8f45-e13376308ab7"):
+                //        type = "mobile_phone";
+                //        break;
+                //    case ("c883f44d-c568-4f5d-997b-9a29991952ae"):
+                //        type = "notebook";
+                //        break;
+                //    case ("e7ac8750-244f-4c88-8670-f5326e952413"):
+                //        type = "tablet";
+                //        break;
+                //}
                 switch (typeId)
                 {
-                    case ("3165127d-dfeb-4a93-8f45-e13376308ab7"):
+                    case ("ec73aefd-a746-48e6-b967-880a49f2a634"):
                         type = "mobile_phone";
                         break;
-                    case ("c883f44d-c568-4f5d-997b-9a29991952ae"):
+                    case ("9177eac7-0c40-4ace-b084-fb26d6ffa3a8"):
                         type = "notebook";
                         break;
-                    case ("e7ac8750-244f-4c88-8670-f5326e952413"):
+                    case ("a357a12d-49ae-4180-9c3f-d0b671c0e0e0"):
                         type = "tablet";
                         break;
                 }

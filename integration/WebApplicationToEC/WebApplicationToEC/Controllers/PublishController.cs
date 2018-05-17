@@ -25,7 +25,7 @@ namespace WebApplicationToEC.Controllers
             System.Diagnostics.Trace.TraceInformation("POST METHOD");
             if (item.Message.Operation.Equals("publish")) {
    
-                string publishUri = "https://api.sphere.io/kc-intergration/products/";
+                string publishUri = "https://api.sphere.io/kentico-cloud-integration-63/products/";
                 var kcProjectId = "19eca161-c9c6-00ac-6bc5-822ae7351b73";
 
                 var codeName = item.Data.Items[0].Codename;
@@ -64,7 +64,7 @@ namespace WebApplicationToEC.Controllers
                              "\"action\": \"publish\"" +
                  "}]" +
              "}";
-            string publishUri = "https://api.sphere.io/kc-intergration/products/";
+            string publishUri = "https://api.sphere.io/kentico-cloud-integration-63/products/";
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             client.DefaultRequestHeaders.Accept.
                 Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -108,7 +108,7 @@ namespace WebApplicationToEC.Controllers
 
             var dict = new Dictionary<string, string>();
             dict.Add("grant_type", "client_credentials");
-            dict.Add("scope", "manage_project:kc-intergration");
+            dict.Add("scope", "manage_project:kentico-cloud-integration-63");
             var req = new HttpRequestMessage(HttpMethod.Post, authUri) { Content = new FormUrlEncodedContent(dict) };
 
             var byteArray = Encoding.ASCII.GetBytes(clientId + ":" + clientSecret);

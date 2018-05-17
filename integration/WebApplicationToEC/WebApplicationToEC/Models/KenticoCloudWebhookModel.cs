@@ -68,4 +68,10 @@ namespace WebApplicationToEC.Models
         [JsonProperty("codename")]
         public string Codename { get; set; }
     }
+
+    public class Token
+    {
+        [JsonProperty("token")]
+        public string authToken { get; set; }
+    }
 }
