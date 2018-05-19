@@ -1,0 +1,81 @@
+{
+  "locale": "cs-CZ",
+  "Banner": {
+    "heading": "Diplomová práce",
+    "text": "Elektronické obchodování pro Kentico Cloud"
+  },
+  "Home": {
+    "aboutLinkText": "Prečti si o appke"
+  },
+  "Header": {
+    "homeLinkTitle": "Domov",
+    "storeLinkTitle": "Produkty",
+    "aboutLinkTitle": "O nás",
+    "contactsLinkTitle": "Kontakt",
+    "items": "položek v košíku"
+  },
+  "Store": {
+    "tabletsLinkTitle": "Tablety",
+    "notebooksLinkTitle": "Notebooky",
+    "mobilesLinkTitle": "Mobilní telefony"
+  },
+  "Contacts": {
+    "author": "Author",
+    "description": "This web was created as diploma thesis at FI MUNI.",
+    "name": "Patrik Cyprian",
+    "mail": "cyprian.patrik@gmail.com",
+    "descKentico": "Thesis was created in cooperation with Kentico software s.r.o.",
+    "address": "Nové sady 996/25",
+    "city": "602 00 Brno"
+  },
+  "Footer": {
+    "contact": "Kontakt",
+    "cityStateZip": "Brno 61600, České republika",
+    "allRightsReserved": "Všechna práva vyhrazena."
+  },
+  "About": {
+    "description": "Tato aplikace demonstruje integraci mezi Kentico Cloud (systém pro správu obsahu) a CommerceTools (platforma elektronického obchodování).",
+    "kc": "Kentico Cloud",
+    "ec": "Commerce Tools",
+    "header": "O nás"
+  },
+  "Mobile": {
+    "add": "Přidat do košíku",
+    "params": "Parametre",
+    "display": "Displej",
+    "battery": "Baterie",
+    "camera": "Fotoaparát",
+    "sim": "Sim",
+    "capacity": "Kapacita",
+    "os": "Operační systém",
+    "procesor": "Procesor",
+    "price": "Cena"
+  },
+  "Tablet": {
+    "add": "Přidat do košíku",
+    "params": "Parametre",
+    "display": "Displej",
+    "battery": "Baterie",
+    "capacity": "Kapacita",
+    "os": "Operační system",
+    "ram": "RAM",
+    "price": "Cena"
+  },
+  "Notebook": {
+    "add": "Přidat do košíku",
+    "params": "Parametre",
+    "display": "Displej",
+    "disk": "Disk",
+    "capacity": "Kapacita",
+    "ram": "RAM",
+    "os": "Operační system",
+    "procesor": "Procesor",
+    "price": "Cena"
+  },
+  "Cart": {
+    "cart": "Košík",
+    "remove": "Odebrat z košíku",
+    "order": "Potvrdit objednávku",
+    "obj": "Objednávka poslaná."
+  }
+}

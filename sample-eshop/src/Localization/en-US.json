@@ -1,0 +1,82 @@
+{
+    "locale": "en-US",
+    "Banner": {
+        "heading": "Master's thesis",
+        "text": "E-commerce for Kentico Cloud"
+    },
+    "Home": {
+        "aboutLinkText": "Read about app"
+    },
+    "Header": {
+        "homeLinkTitle": "Home",
+        "storeLinkTitle": "Products",
+        "aboutLinkTitle": "About us",
+        "contactsLinkTitle": "Contact",
+        "items": "items in Cart"
+    },
+    "Store": {
+        "tabletsLinkTitle": "Tablets",
+        "notebooksLinkTitle": "Notebooks",
+        "mobilesLinkTitle": "Mobile phones"
+    },
+    "Contacts": {
+        "author": "Author",
+        "description": "This web was created as master thesis at FI MUNI.",
+        "name": "Patrik Cyprian",
+        "mail": "cyprian.patrik@gmail.com",
+        "descKentico": "Thesis was created in cooperation with Kentico software s.r.o.",
+        "address": "Nové sady 996/25",
+        "city": "602 00 Brno",
+        "state": "Czech Republic"
+    },
+    "Footer": {
+      "contact": "Contact",
+      "cityStateZip": "Brno 61600, České republika",
+      "allRightsReserved": "All rights reserved."
+    },
+    "About": {
+        "description": "This application demostrates integration between Kentico Cloud (content management system) and CommerceTools (E-commerce platform).",
+        "kc": "Kentico Cloud",
+        "ec": "Commerce Tools",
+        "header": "About"
+    },
+    "Mobile": {
+        "add": "Add to cart",
+        "params": "Parameters",
+        "display": "Display",
+        "battery": "Battery",
+        "camera": "Camera",
+        "sim": "Sim",
+        "capacity": "Capacity",
+        "os": "Operation system",
+        "procesor": "Procesor",
+        "price": "Price"
+    },
+    "Tablet": {
+        "add": "Add to cart",
+        "params": "Parameters",
+        "display": "Display",
+        "battery": "Battery",
+        "capacity": "Capacity",
+        "os": "Operation system",
+        "ram": "RAM",
+        "price": "Price"
+    },
+    "Notebook": {
+        "add": "Add to cart",
+        "params": "Parameters",
+        "display": "Display",
+        "disk": "Disk",
+        "capacity": "Capacity",
+        "ram": "RAM",
+        "os": "Operation system",
+        "procesor": "Procesor",
+        "price": "Price"
+    },
+    "Cart": {
+        "cart": "Cart",
+        "remove": "Remove from cart",
+        "order": "Confirm order",
+        "obj": "Order sent."
+    }
+}
