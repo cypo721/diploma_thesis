@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import Link from '../Components/LowerCaseUrlLink';
 import TabletStore from "../Stores/Tablet";
 
+import NoImage from "../Images/No-image-found.jpg"
+
 let getState = (props) => {
     return {
         tablets: TabletStore.getTablets(props.language),
@@ -51,9 +53,11 @@ class Tablets extends Component {
 
             let tablets = this.state.tablets.filter(filter).map((tablet, index) => {
             console.log(tablet);
-            let price = formatPrice(tablet.masterVariant.attributes[0].value.centAmount / 100, this.props.language, tablet.masterVariant.attributes[0].value.currencyCode);
-            let name = tablet.name.value;
-            let imageLink = tablet.mainPicture.value[0].url;
+            let price = tablet.masterVariant.prices[0]?
+                formatPrice(tablet.masterVariant.prices[0].value.centAmount / 100, this.props.language, tablet.masterVariant.prices[0].value.currencyCode)
+                :"missing price";
+            let name = tablet.name? tablet.name.value : "missing name";
+            let imageLink = tablet.mainPicture.value[0]? tablet.mainPicture.value[0].url : NoImage;
             let link = `/${this.props.language}/tablets/${tablet.id}`;
 
             return (

@@ -53,8 +53,10 @@ class Mobiles extends Component {
 
         let mobiles = this.state.notebooks.filter(filter).map((mobile, index) => {
             console.log(mobile);
-            let price = formatPrice(mobile.masterVariant.attributes[7].value.centAmount / 100, this.props.language, mobile.masterVariant.attributes[7].value.currencyCode);
-            let name = mobile.name.value;
+            let price = mobile.masterVariant.prices[0]?
+                formatPrice(mobile.masterVariant.prices[0].value.centAmount / 100, this.props.language, mobile.masterVariant.prices[0].value.currencyCode)
+                : "missing price";
+            let name = mobile.name? mobile.name.value : "missing name";
             let imageLink = mobile.mainPicture.value[0]? mobile.mainPicture.value[0].url : NoImage;
             let link = `/${this.props.language}/mobiles/${mobile.id}`;
 

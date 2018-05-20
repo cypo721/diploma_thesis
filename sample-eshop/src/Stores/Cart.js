@@ -1,4 +1,4 @@
-import CommerceClient from "../CommerceClient"
+import CommerceClient, {setToken} from "../CommerceClient"
 
 let changeListeners = [];
 let cart;
@@ -67,16 +67,22 @@ let order = (cartId, version) => {
 };
 
 export const createCart = () => {
-    CommerceClient.execute(create)
-        .then(result => {
-            cart = result.body;
-            notifyChange();
+    fetch('http://commercetoolsintegration.azurewebsites.net/api/auth',{
+                method: 'GET',
+            }).then(response => response.json())
+            .then(jsondata => {
+                setToken(jsondata.token);
+            CommerceClient(jsondata.token).execute(create)
+                .then(result => {
+                    cart = result.body;
+                    notifyChange();
+                });
         });
 };
 
 let addItem = (cartId, productId, version) => {
     add(cartId, productId, version);
-    CommerceClient.execute(addRequest)
+    CommerceClient().execute(addRequest)
         .then(result => {
             cart = result.body;
             notifyChange();
@@ -85,7 +91,7 @@ let addItem = (cartId, productId, version) => {
 
 let removeItem = (cartId, productId, version) => {
     remove(cartId, productId, version);
-    CommerceClient.execute(removeRequest)
+    CommerceClient().execute(removeRequest)
         .then(result => {
             cart = result.body;
             notifyChange();
@@ -94,7 +100,7 @@ let removeItem = (cartId, productId, version) => {
 
 let sendOrder = (cartId, version) => {
     order(cartId, version);
-    CommerceClient.execute(orderRequest)
+    CommerceClient().execute(orderRequest)
         .then(result => {
             console.log(result);
             notifyChange();

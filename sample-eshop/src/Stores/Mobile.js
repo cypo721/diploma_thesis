@@ -28,7 +28,7 @@ let fetchMobiles = (language) => {
       query.languageParameter(language);
     }
     //fetch('http://commercetoolsintegration.azurewebsites.net/api/auth',{ mode: 'no-cors' }).then(result => console.log(result));
-    CommerceClient.execute(request)
+    CommerceClient().execute(request)
         .then(result => {
             console.log(result);
             mobiles[language] = result;

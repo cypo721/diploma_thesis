@@ -25,19 +25,8 @@ let fetchTablets = (language) => {
      if (language) {
        query.languageParameter(language);
      }
-     //method: 'GET',
-    //mode: 'no -cors',
-    // fetch('http://commercetoolsintegration.azurewebsites.net/api/auth',{
-    //     method: 'GET',
-    //     headers: {
-    //         'Access-Control-Allow-Origin': '*',
-    //         'Access-Control-Allow-Methods': 'GET'
-    //         // 'Access-Control-Allow-Headers': 'Content-Type'
-    //     },
-    //     mode: 'cors'
-    //     }).then(response => response.json())
-    //     .then(jsondata => console.log(jsondata));
-    CommerceClient.execute(request)
+
+    CommerceClient().execute(request)
         .then(result => {
             console.log(result);
             tablets[language] = result;

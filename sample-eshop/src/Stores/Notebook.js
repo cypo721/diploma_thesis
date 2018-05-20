@@ -26,8 +26,8 @@ let fetchNotebooks = (language) => {
     if (language) {
       query.languageParameter(language);
     }
-    //fetch('http://commercetoolsintegration.azurewebsites.net/api/auth',{ mode: 'no-cors' }).then(result => console.log(result));
-    CommerceClient.execute(request)
+
+    CommerceClient().execute(request)
         .then(result => {
             console.log(result);
             notebooks[language] = result;

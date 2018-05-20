@@ -1,25 +1,37 @@
 import { createClient } from '@commercetools/sdk-client'
-import { createAuthMiddlewareForClientCredentialsFlow } from '@commercetools/sdk-middleware-auth'
+import { createAuthMiddlewareWithExistingToken } from '@commercetools/sdk-middleware-auth'
 import { createHttpMiddleware } from '@commercetools/sdk-middleware-http'
 
-var settings = require('./settings.json');
+let accessToken;
 
-const authMiddleware = createAuthMiddlewareForClientCredentialsFlow({
-    host: 'https://auth.commercetools.com',
-    projectKey: 'kentico-cloud-integration-63',
-    credentials: {
-        clientId: settings.commerceToolsClientId,
-        clientSecret: settings.commerceToolsClientSecret,
-    },
-    fetch
+// Middleware, when you want to use credentials of commerce tools project
+// const authMiddleware = createAuthMiddlewareForClientCredentialsFlow({
+//     host: 'https://auth.commercetools.com',
+//     projectKey: 'kentico-cloud-integration-63',
+//     credentials: {
+//         clientId: "id",
+//         clientSecret: "secret",
+//     },
+//     fetch
+// });
+
+let authWithTokenMiddleware = (accessToken) => createAuthMiddlewareWithExistingToken(
+    `Bearer ${accessToken}`, {
+        force: true,
 });
+
 
 const httpMiddleware = createHttpMiddleware({
     host: 'https://api.commercetools.com',
 });
 
-const CommerceClient = createClient({
-    middlewares: [authMiddleware, httpMiddleware],
-});
+export function setToken(token) {
+    accessToken = token;
+}
+
+const CommerceClient = (token) =>
+    createClient({
+        middlewares: [authWithTokenMiddleware(token? token : accessToken), httpMiddleware],
+    });
 
 export default CommerceClient

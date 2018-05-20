@@ -54,8 +54,10 @@ class Notebooks extends Component {
 
         let notebooks = this.state.notebooks.filter(filter).map((notebook, index) => {
             console.log(notebook);
-            let price = formatPrice(notebook.masterVariant.attributes[6].value.centAmount / 100, this.props.language, notebook.masterVariant.attributes[6].value.currencyCode);
-            let name = notebook.name.value;
+            let price = notebook.masterVariant.prices[0]?
+                formatPrice(notebook.masterVariant.prices[0].value.centAmount / 100, this.props.language, notebook.masterVariant.prices[0].value.currencyCode)
+                : "missing price";
+            let name = notebook.name? notebook.name.value: "missing name";
             let imageLink = notebook.mainPicture.value[0]? notebook.mainPicture.value[0].url : NoImage;
             let link = `/${this.props.language}/notebooks/${notebook.id}`;
 

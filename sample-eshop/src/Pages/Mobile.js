@@ -4,6 +4,8 @@ import RichTextElement from '../Components/RichTextElement';
 import { translate } from 'react-translate';
 import CartStore from "../Stores/Cart"
 
+import NoImage from "../Images/No-image-found.jpg"
+
 let getState = (props) => {
     return {
         mobile: MobileStore.getMobile(props.match.params.mobileSlug, props.language),
@@ -54,9 +56,9 @@ class Mobile extends Component {
 
         let mobile = this.state.mobile;
         console.log("mobileslug" + mobile.id);
-        let name = mobile.name.en;
-        let imageLink = mobile.mainPicture.value[0].url;
-        let descriptionElement = mobile.description;
+        let name = mobile.name?  mobile.name.en : "missing name";
+        let imageLink = mobile.mainPicture.value[0]? mobile.mainPicture.value[0].url : NoImage;
+        let descriptionElement = mobile.description? mobile.description : "";
 
         return (
             <div className="container">
@@ -68,7 +70,9 @@ class Mobile extends Component {
                             </header>
                         </div>
                         <div className="col-md-2">
-                            <button className="btn btn-primary" onClick={() => this.addItem()}>{ this.props.t("add")}</button>
+                            {mobile.masterVariant.prices[0]?
+                                <button className="btn btn-primary" onClick={() => this.addItem()}>{ this.props.t("add")}</button>
+                                :null}
                         </div>
                     </div>
                     <div className="row-fluid">
@@ -81,20 +85,32 @@ class Mobile extends Component {
                             <div className="product-detail-properties">
                                 <h4>{this.props.t("params")}</h4>
                                 <dl>
-                                    { mobile.masterVariant.attributes[1].value ? <dt className="col-xs-12 col-sm-4">{this.props.t("capacity")}</dt>: null}
-                                    { mobile.masterVariant.attributes[1].value ? <dd className="col-xs-12 col-sm-8">{mobile.masterVariant.attributes[1].value}</dd>: null}
-                                    { mobile.masterVariant.attributes[2].value ? <dt className="col-xs-12 col-sm-4">{this.props.t("camera")}</dt>: null}
-                                    { mobile.masterVariant.attributes[2].value ? <dd className="col-xs-12 col-sm-8">{mobile.masterVariant.attributes[2].value}</dd>: null}
-                                    { mobile.masterVariant.attributes[3].value ? <dt className="col-xs-12 col-sm-4">{this.props.t("procesor")}</dt>: null}
-                                    { mobile.masterVariant.attributes[3].value ? <dd className="col-xs-12 col-sm-8">{mobile.masterVariant.attributes[3].value}</dd>: null}
-                                    { mobile.masterVariant.attributes[0].value ? <dt className="col-xs-12 col-sm-4">{this.props.t("display")}</dt>: null}
-                                    { mobile.masterVariant.attributes[0].value ? <dd className="col-xs-12 col-sm-8">{mobile.masterVariant.attributes[0].value}</dd>: null}
-                                    { mobile.masterVariant.attributes[6].value ? <dt className="col-xs-12 col-sm-4">{this.props.t("os")}</dt>: null}
-                                    { mobile.masterVariant.attributes[6].value ? <dd className="col-xs-12 col-sm-8">{mobile.masterVariant.attributes[6].value}</dd>: null}
-                                    { mobile.masterVariant.attributes[4].value ? <dt className="col-xs-12 col-sm-4">{this.props.t("battery")}</dt>: null}
-                                    { mobile.masterVariant.attributes[4].value ? <dd className="col-xs-12 col-sm-8">{mobile.masterVariant.attributes[4].value}</dd>: null}
-                                    { mobile.masterVariant.attributes[5].value ? <dt className="col-xs-12 col-sm-4">{this.props.t("sim")}</dt>: null}
-                                    { mobile.masterVariant.attributes[5].value ? <dd className="col-xs-12 col-sm-8">{mobile.masterVariant.attributes[5].value}</dd>: null}
+                                    {
+                                        mobile.masterVariant.attributes.map(function(atr){
+                                            return <dl key={atr.name}>
+                                                        <dt className="col-xs-12 col-sm-4">{this.props.t(atr.name.toLowerCase())}</dt>
+                                                        {atr.name === "Price" ?
+                                                            <dd className="col-xs-12 col-sm-8">{atr.value.centAmount / 100} {atr.value.currencyCode}</dd>:
+                                                            <dd className="col-xs-12 col-sm-8">{atr.value}</dd>
+                                                        }
+                                                    </dl>
+                                        }, this)
+
+                                    }
+                                    {/*{ mobile.masterVariant.attributes[1].value ? <dt className="col-xs-12 col-sm-4">{this.props.t("capacity")}</dt>: null}*/}
+                                    {/*{ mobile.masterVariant.attributes[1].value ? <dd className="col-xs-12 col-sm-8">{mobile.masterVariant.attributes[1].value}</dd>: null}*/}
+                                    {/*{ mobile.masterVariant.attributes[2].value ? <dt className="col-xs-12 col-sm-4">{this.props.t("camera")}</dt>: null}*/}
+                                    {/*{ mobile.masterVariant.attributes[2].value ? <dd className="col-xs-12 col-sm-8">{mobile.masterVariant.attributes[2].value}</dd>: null}*/}
+                                    {/*{ mobile.masterVariant.attributes[3].value ? <dt className="col-xs-12 col-sm-4">{this.props.t("procesor")}</dt>: null}*/}
+                                    {/*{ mobile.masterVariant.attributes[3].value ? <dd className="col-xs-12 col-sm-8">{mobile.masterVariant.attributes[3].value}</dd>: null}*/}
+                                    {/*{ mobile.masterVariant.attributes[0].value ? <dt className="col-xs-12 col-sm-4">{this.props.t("display")}</dt>: null}*/}
+                                    {/*{ mobile.masterVariant.attributes[0].value ? <dd className="col-xs-12 col-sm-8">{mobile.masterVariant.attributes[0].value}</dd>: null}*/}
+                                    {/*{ mobile.masterVariant.attributes[6].value ? <dt className="col-xs-12 col-sm-4">{this.props.t("os")}</dt>: null}*/}
+                                    {/*{ mobile.masterVariant.attributes[6].value ? <dd className="col-xs-12 col-sm-8">{mobile.masterVariant.attributes[6].value}</dd>: null}*/}
+                                    {/*{ mobile.masterVariant.attributes[4].value ? <dt className="col-xs-12 col-sm-4">{this.props.t("battery")}</dt>: null}*/}
+                                    {/*{ mobile.masterVariant.attributes[4].value ? <dd className="col-xs-12 col-sm-8">{mobile.masterVariant.attributes[4].value}</dd>: null}*/}
+                                    {/*{ mobile.masterVariant.attributes[5].value ? <dt className="col-xs-12 col-sm-4">{this.props.t("sim")}</dt>: null}*/}
+                                    {/*{ mobile.masterVariant.attributes[5].value ? <dd className="col-xs-12 col-sm-8">{mobile.masterVariant.attributes[5].value}</dd>: null}*/}
                                 </dl>
                             </div>
                         </div>

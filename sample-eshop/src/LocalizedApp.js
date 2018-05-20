@@ -12,7 +12,7 @@ class LocalizedApp extends Component {
         super(props)
         this.state = {
             language: getLanguageCode(props.match),
-            cart: undefined
+            cart: undefined,
         }
         this.setLanguageCode = this.setLanguageCode.bind(this);
     }
