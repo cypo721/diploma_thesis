@@ -24,8 +24,6 @@ namespace WebApplicationToEC.Controllers
             string clientId = System.Configuration.ConfigurationManager.AppSettings["EcommerceClientId"];
             string clientSecret = System.Configuration.ConfigurationManager.AppSettings["EcommerceClientSecret"];
             string authUri = "https://@auth.sphere.io/oauth/token";
-            //clientId = "rvcYQt0Sda694y3jLqItwDwZ";
-            //clientSecret = "ZEDpKvjjctjWMj12z5E4XNeCkxC4DZS2";
 
             var dict = new Dictionary<string, string>();
             dict.Add("grant_type", "client_credentials");

@@ -43,7 +43,7 @@ namespace WebApplicationToEC.Controllers
 
                         //authentication to CommerceTools
                         string token = await GetCommerceToolsAuthToken();
-                        System.Diagnostics.Trace.TraceInformation("Token: " + token);
+
                         string version = await GetVersionOfCommerceToolsProduct(token, productId, publishUri);
 
                         //publish product in CommerceTools
@@ -126,7 +126,6 @@ namespace WebApplicationToEC.Controllers
                 var data = await content.ReadAsStringAsync();
                 JObject o = JObject.Parse(data);
                 token = (string)o.SelectToken("$.access_token");
-                System.Diagnostics.Trace.TraceInformation("Token: " + token);
                 if (!response.IsSuccessStatusCode)
                 {
                     throw new HttpRequestException(response.ReasonPhrase);
