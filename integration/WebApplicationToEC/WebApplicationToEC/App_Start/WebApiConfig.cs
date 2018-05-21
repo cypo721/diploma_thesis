@@ -22,9 +22,6 @@ namespace WebApplicationToEC
                 name: "AuthToCommerceTools",
                 routeTemplate: "api/{controller}"
             );
-
-            var appXmlType = config.Formatters.XmlFormatter.SupportedMediaTypes.FirstOrDefault(t => t.MediaType == "application/xml");
-            config.Formatters.XmlFormatter.SupportedMediaTypes.Remove(appXmlType);
         }
     }
 }

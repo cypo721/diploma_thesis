@@ -143,6 +143,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\CommerceToolsMessage.cs" />
+    <Compile Include="Models\CreateItemInKenticoCloudModel.cs" />
+    <Compile Include="Models\CreateItemType.cs" />
+    <Compile Include="Models\CreateLanguageVariant.cs" />
+    <Compile Include="Models\Elements.cs" />
+    <Compile Include="Models\Name.cs" />
+    <Compile Include="Models\ProductProjection.cs" />
+    <Compile Include="Models\ProductType.cs" />
+    <Compile Include="Models\Resource.cs" />
+    <Compile Include="Models\Slug.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Functions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

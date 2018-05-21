@@ -9,6 +9,7 @@ using System.Configuration;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using WebJobToKC.Models;
 
 namespace WebJobToKc
 {
@@ -69,83 +70,57 @@ namespace WebJobToKc
         /// </summary>
         /// <param name="message">Generated message from CommerceTools about creation of product</param>
         /// <param name="log">logger</param>
-        public static async Task ProcessQueueMessage([ServiceBusTrigger("posttokc")] string message, TextWriter log)
+        public static async Task ProcessQueueMessage([ServiceBusTrigger("posttokc")] CommerceToolsMessage message, TextWriter log)
         {
             log.WriteLine("Message to handle: " + message);
-            JObject o = JObject.Parse(message);
-            string id = (string)o.SelectToken("$.productProjection.id");
-            string name = (string)o.SelectToken("$.productProjection.name.en");
-            string typeId = (string)o.SelectToken("$.productProjection.productType.id");
-            string operation = (string)o.SelectToken("$.type");
-            string type = "";
+            //JObject o = JObject.Parse(message);
+            //string id = (string)o.SelectToken("$.productProjection.id");
+            //string name = (string)o.SelectToken("$.productProjection.name.en");
+            //string typeId = (string)o.SelectToken("$.productProjection.productType.id");
+            //string operation = (string)o.SelectToken("$.type");
             
-            if (operation.Equals("ProductCreated"))
-            { 
-                // getting type of product in CommerceTools
-                //switch (typeId)
-                //{
-                //    case ("3165127d-dfeb-4a93-8f45-e13376308ab7"):
-                //        type = "mobile_phone";
-                //        break;
-                //    case ("c883f44d-c568-4f5d-997b-9a29991952ae"):
-                //        type = "notebook";
-                //        break;
-                //    case ("e7ac8750-244f-4c88-8670-f5326e952413"):
-                //        type = "tablet";
-                //        break;
-                //}
-                switch (typeId)
-                {
-                    case ("ec73aefd-a746-48e6-b967-880a49f2a634"):
-                        type = "mobile_phone";
-                        break;
-                    case ("9177eac7-0c40-4ace-b084-fb26d6ffa3a8"):
-                        type = "notebook";
-                        break;
-                    case ("a357a12d-49ae-4180-9c3f-d0b671c0e0e0"):
-                        type = "tablet";
-                        break;
-                }
-                log.WriteLine("New product with id: " + id + ",name: " + name + ",type: " + type);
+            if (message.Type.Equals("ProductCreated"))
+            {
+                string token = await GetCommerceToolsAuthToken();
+
+                // get product type name from commercetools
+                string type = await getProductTypeName(message.ProductProjection.ProdcutType.Id , token, log);
+                CreateItemInKenticoCloudModel createBody = new CreateItemInKenticoCloudModel();
+                createBody.Name = message.ProductProjection.Name.En;
+                createBody.Type = new CreateItemType();
+                createBody.Type.Codename = type;
 
                 //body of request which creates item in Kentico Cloud
-                string body = "{ " +
-                                    "\"name\": \"" + name + "\"," +
-                                    "\"type\": { " +
-                                                "\"codename\": \"" + type + "\"" +
-                                    "}" +
-                                "}";
-
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", System.Configuration.ConfigurationManager.AppSettings["KenticoCloudApiKey"]);
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", ConfigurationManager.AppSettings["KenticoCloudApiKey"]);
                 client.DefaultRequestHeaders.Accept.
                     Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
                 string itemId = "";
-                using (HttpResponseMessage response = await client.PostAsync("https://manage.kenticocloud.com/projects/19eca161-c9c6-00ac-6bc5-822ae7351b73/items", new StringContent(body)))
+                using (HttpResponseMessage response = await client.PostAsync("https://manage.kenticocloud.com/projects/" +
+                     ConfigurationManager.AppSettings["KenticoProjectId"] + "/items", new StringContent(JObject.FromObject(createBody).ToString())))
 
                 using (HttpContent content = response.Content)
                 {
                     string data = await content.ReadAsStringAsync();
-                    o = JObject.Parse(data);
+                    JObject o = JObject.Parse(data);
                     itemId = (string)o.SelectToken("$.id");
                 }
 
                 //body of request which creates language version of item in Kentico Cloud
-                body = "{ " +
-                        "\"elements\": { " +
-                              "\"external_source_id\": \"" + id + "\"" +
-                        "}" +
-                    "}";
+                CreateLanguageVariant variant = new CreateLanguageVariant();
+                variant.Elements = new Elements();
+                variant.Elements.ExternalSourceId = message.ProductProjection.Id;
+                log.WriteLine("New product with id: " + message.ProductProjection.ProdcutType.Id + ",name: " + message.ProductProjection.Name.En + ",type: " + type);
 
-                bool success = await CreateLanguageVariant(body, "default", itemId, log) ;
+                bool success = await CreateLanguageVariant(JObject.FromObject(variant).ToString(), "en-US", itemId, log) ;
                 if (!success)
                 {
-                    log.WriteLine("Problem in creation of item with default language created.");
+                    log.WriteLine("Problem in creation of item with en-US language created.");
                 }
-                success = await CreateLanguageVariant(body, "cs_CZ", itemId, log);
+                success = await CreateLanguageVariant(JObject.FromObject(variant).ToString(), "cs-CZ", itemId, log);
                 if (!success)
                 {
-                    log.WriteLine("Problem in creation of item with cs_CZ language created.");
+                    log.WriteLine("Problem in creation of item with cs-CZ language created.");
                 }
             }
             else
@@ -165,7 +140,8 @@ namespace WebJobToKc
         private static async Task<bool> CreateLanguageVariant(string body, string languageCodename, string id, TextWriter log)
         {
             string itemId = "";
-            using (HttpResponseMessage response = await client.PutAsync("https://manage.kenticocloud.com/projects/19eca161-c9c6-00ac-6bc5-822ae7351b73/items/" + id +
+            using (HttpResponseMessage response = await client.PutAsync("https://manage.kenticocloud.com/projects/"+
+                                                     ConfigurationManager.AppSettings["KenticoProjectId"] + "/items/" + id +
                                                 "/variants/codename/" + languageCodename
                                                 , new StringContent(body)))
             using (HttpContent content = response.Content)
@@ -181,6 +157,57 @@ namespace WebJobToKc
             }        
 
         }
+
+        private static async Task<string> getProductTypeName(string id, string token, TextWriter log)
+        {
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            using (HttpResponseMessage response = await client.GetAsync("https://api.sphere.io/"+ ConfigurationManager.AppSettings["CommerceToolsProjectId"] +"/product-types/" + id))
+
+            using (HttpContent content = response.Content)
+            {
+                string data = await content.ReadAsStringAsync();
+                JObject o = JObject.Parse(data);
+                string type = (string)o.SelectToken("$.name");
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new HttpRequestException(response.ReasonPhrase);
+                }
+                type = type.Replace(" ", "_");
+                log.WriteLine("Type: " + type);
+                return type.ToLower();
+            }
+        }
+
+        private static async Task<String> GetCommerceToolsAuthToken()
+        {
+            string clientId = ConfigurationManager.AppSettings["EcommerceClientId"];
+            string clientSecret = ConfigurationManager.AppSettings["EcommerceClientSecret"];
+            string authUri = "https://@auth.sphere.io/oauth/token";
+
+            var dict = new Dictionary<string, string>();
+            dict.Add("grant_type", "client_credentials");
+            dict.Add("scope", "manage_project:kentico-cloud-integration-63");
+            var req = new HttpRequestMessage(HttpMethod.Post, authUri) { Content = new FormUrlEncodedContent(dict) };
+
+            var byteArray = Encoding.ASCII.GetBytes(clientId + ":" + clientSecret);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
+
+            string token = "";
+            using (HttpResponseMessage response = await client.SendAsync(req))
+
+            using (HttpContent content = response.Content)
+            {
+                var data = await content.ReadAsStringAsync();
+                JObject o = JObject.Parse(data);
+                token = (string)o.SelectToken("$.access_token");
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new HttpRequestException(response.ReasonPhrase);
+                }
+                return token;
+            }
+        }
+
 
     }
 }

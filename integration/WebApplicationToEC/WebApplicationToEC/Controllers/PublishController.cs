@@ -25,31 +25,35 @@ namespace WebApplicationToEC.Controllers
             System.Diagnostics.Trace.TraceInformation("POST METHOD");
             if (item.Message.Operation.Equals("publish")) {
    
-                string publishUri = "https://api.sphere.io/kentico-cloud-integration-63/products/";
-                var kcProjectId = "19eca161-c9c6-00ac-6bc5-822ae7351b73";
+                string publishUri = "https://api.sphere.io/"+ System.Configuration.ConfigurationManager.AppSettings["CommerceToolsProjectId"] + "/products/";
+                var kcProjectId = System.Configuration.ConfigurationManager.AppSettings["KenticoProjectId"];
 
-                var codeName = item.Data.Items[0].Codename;
-                System.Diagnostics.Trace.TraceInformation("Item codename: " + item.Data.Items[0].Codename);
-
-                client.DefaultRequestHeaders.Accept.
-                     Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                // get published item from Kentico Cloud
-                try
+                for (int i = 0; i < item.Data.Items.Length; i++)
                 {
-                    string productId = await GetPublishedItemFromKenticoCloud(kcProjectId, codeName);
+                    var codeName = item.Data.Items[i].Codename;
+                    var language = item.Data.Items[i].Language;
+                    System.Diagnostics.Trace.TraceInformation("Item codename: " + item.Data.Items[i].Codename + ",lang:" + language);
 
-                    //authentication to CommerceTools
-                    string token = await GetCommerceToolsAuthToken();
+                    client.DefaultRequestHeaders.Accept.
+                         Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    // get published item from Kentico Cloud
+                    try
+                    {
+                        string productId = await GetPublishedItemFromKenticoCloud(kcProjectId, codeName, language);
 
-                    string version = await GetVersionOfCommerceToolsProduct(token, productId, publishUri);
+                        //authentication to CommerceTools
+                        string token = await GetCommerceToolsAuthToken();
+                        System.Diagnostics.Trace.TraceInformation("Token: " + token);
+                        string version = await GetVersionOfCommerceToolsProduct(token, productId, publishUri);
 
-                    //publish product in CommerceTools
-                    return await PublishInCommerceTools(version, productId, token);
-                }
-                catch(HttpRequestException ex)
-                {
-                    System.Diagnostics.Trace.TraceInformation(ex.Message);
-                    return HttpStatusCode.BadRequest;
+                        //publish product in CommerceTools
+                        return await PublishInCommerceTools(version, productId, token);
+                    }
+                    catch(HttpRequestException ex)
+                    {
+                        System.Diagnostics.Trace.TraceInformation(ex.Message);
+                        return HttpStatusCode.BadRequest;
+                    }
                 }
             }
             System.Diagnostics.Trace.TraceInformation("Not publish operation.");
@@ -64,11 +68,11 @@ namespace WebApplicationToEC.Controllers
                              "\"action\": \"publish\"" +
                  "}]" +
              "}";
-            string publishUri = "https://api.sphere.io/kentico-cloud-integration-63/products/";
+
+            string publishUri = "https://api.sphere.io/" + System.Configuration.ConfigurationManager.AppSettings["CommerceToolsProjectId"] + "/products/";
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             client.DefaultRequestHeaders.Accept.
                 Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
             using (HttpResponseMessage response = await client.PostAsync(publishUri + productId, new StringContent(body)))
 
             using (HttpContent content = response.Content)
@@ -80,10 +84,10 @@ namespace WebApplicationToEC.Controllers
             }
         }
 
-        private async Task<string> GetPublishedItemFromKenticoCloud(string kcProjectId, string codeName)
+        private async Task<string> GetPublishedItemFromKenticoCloud(string kcProjectId, string codeName, string lang)
         {
             var productId = "";
-            string deliveryUri = "https://deliver.kenticocloud.com/" + kcProjectId + "/items/" + codeName;
+            string deliveryUri = "https://deliver.kenticocloud.com/" + kcProjectId + "/items/" + codeName + "?language=" + lang;
 
             using (HttpResponseMessage response = await client.GetAsync(deliveryUri))
             using (HttpContent content = response.Content)
@@ -122,6 +126,7 @@ namespace WebApplicationToEC.Controllers
                 var data = await content.ReadAsStringAsync();
                 JObject o = JObject.Parse(data);
                 token = (string)o.SelectToken("$.access_token");
+                System.Diagnostics.Trace.TraceInformation("Token: " + token);
                 if (!response.IsSuccessStatusCode)
                 {
                     throw new HttpRequestException(response.ReasonPhrase);
@@ -140,11 +145,11 @@ namespace WebApplicationToEC.Controllers
                 string data = await content.ReadAsStringAsync();
                 JObject o = JObject.Parse(data);
                 string version = (string)o.SelectToken("$.version");
+                System.Diagnostics.Trace.TraceInformation("Actual version: " + version);
                 if (!response.IsSuccessStatusCode)
                 {
                     throw new HttpRequestException(response.ReasonPhrase);
                 }
-                System.Diagnostics.Trace.TraceInformation("Actual version: " + version);
                 return version;
             }
 

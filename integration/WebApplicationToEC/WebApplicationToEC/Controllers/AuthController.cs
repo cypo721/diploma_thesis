@@ -19,11 +19,13 @@ namespace WebApplicationToEC.Controllers
         /// Used to get authentication token for CommerceTools API.
         /// </summary>
         /// <returns>actual value of auth token</returns>
-        public async Task<JObject> GetAuthToken()
+        public async Task<HttpResponseMessage> GetAuthToken()
         {
             string clientId = System.Configuration.ConfigurationManager.AppSettings["EcommerceClientId"];
             string clientSecret = System.Configuration.ConfigurationManager.AppSettings["EcommerceClientSecret"];
             string authUri = "https://@auth.sphere.io/oauth/token";
+            //clientId = "rvcYQt0Sda694y3jLqItwDwZ";
+            //clientSecret = "ZEDpKvjjctjWMj12z5E4XNeCkxC4DZS2";
 
             var dict = new Dictionary<string, string>();
             dict.Add("grant_type", "client_credentials");
@@ -40,12 +42,16 @@ namespace WebApplicationToEC.Controllers
             {
                 var data = await content.ReadAsStringAsync();
                 JObject o = JObject.Parse(data);
-                token.authToken = (string)o.SelectToken("$.access_token");
+                token.AuthToken = (string)o.SelectToken("$.access_token");
                 if (!response.IsSuccessStatusCode)
                 {
                     throw new HttpRequestException(response.ReasonPhrase);
                 }
-                return JObject.FromObject(token);
+                HttpResponseMessage msg = new HttpResponseMessage();
+                msg.Headers.Add("Access-Control-Allow-Origin", "*");
+                msg.Content = new StringContent(JObject.FromObject(token).ToString(), Encoding.UTF8, "application/json");
+                return msg;
+               // return JObject.FromObject(token);
             }
         }
     }

@@ -127,14 +127,20 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="App_Start\SwaggerConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AuthController.cs" />
     <Compile Include="Controllers\PublishController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Action.cs" />
+    <Compile Include="Models\Data.cs" />
+    <Compile Include="Models\Item.cs" />
     <Compile Include="Models\KenticoCloudWebhookModel.cs" />
+    <Compile Include="Models\Message.cs" />
+    <Compile Include="Models\PublishCommerceToolsModel.cs" />
+    <Compile Include="Models\Taxonomy.cs" />
+    <Compile Include="Models\Token.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
