@@ -10,7 +10,9 @@ let getState = (props) => {
         filter: TabletStore.getFilter()
     };
 };
-
+/*
+Lists tablets in store
+ */
 class Tablets extends Component {
 
     constructor(props) {
@@ -52,7 +54,6 @@ class Tablets extends Component {
         };
 
             let tablets = this.state.tablets.filter(filter).map((tablet, index) => {
-            console.log(tablet);
             let price = tablet.masterVariant.prices[0]?
                 formatPrice(tablet.masterVariant.prices[0].value.centAmount / 100, this.props.language, tablet.masterVariant.prices[0].value.currencyCode)
                 :"missing price";

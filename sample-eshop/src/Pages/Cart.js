@@ -7,7 +7,9 @@ let getState = (props) => {
         cart: props.cart? CartStore.provideCart() : CartStore.getCart(),
     };
 };
-
+/*
+Shows items in cart. U can order items on this page.
+ */
 class Cart extends Component {
 
     constructor(props) {
@@ -34,7 +36,6 @@ class Cart extends Component {
     }
 
     sendOrder(cartId, version){
-        console.log("order");
         CartStore.createOrder(cartId,version);
         this.status= this.props.t('obj');
     }

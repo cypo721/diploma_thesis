@@ -12,7 +12,9 @@ let getState = (props) => {
         cart: props.cart? CartStore.provideCart() : CartStore.getCart()
     };
 };
-
+/*
+Shows mobile detail page.
+ */
 class Mobile extends Component {
 
     constructor(props) {
@@ -41,7 +43,6 @@ class Mobile extends Component {
     }
 
     addItem(){
-        console.log("adding");
         let cart = this.state.cart;
         let mobile = this.state.mobile;
         CartStore.addToCart(cart.id, mobile.id, cart.version);
@@ -55,7 +56,6 @@ class Mobile extends Component {
         }
 
         let mobile = this.state.mobile;
-        console.log("mobileslug" + mobile.id);
         let name = mobile.name?  mobile.name.en : "missing name";
         let imageLink = mobile.mainPicture.value[0]? mobile.mainPicture.value[0].url : NoImage;
         let descriptionElement = mobile.description? mobile.description : "";

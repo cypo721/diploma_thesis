@@ -18,7 +18,6 @@ class Header extends Component {
 
   constructor(props){
     super(props);
-    console.log(props);
     this.state = getState(props);
     this.onChange = this.onChange.bind(this);
   }
@@ -38,7 +37,6 @@ class Header extends Component {
     }
 
   render (){
-      console.log(this.state);
     return (
       <header className="header" role="banner">
         <div className="menu">

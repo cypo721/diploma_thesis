@@ -6,6 +6,9 @@ import TabletStore from '../Components/TabletStore';
 import NotebookStore from '../Components/NotebookStore';
 import MobileStore from '../Components/MobilesStore';
 
+/*
+Routing between items in store.
+ */
 const Store = (props) => {
   return (
     <div className="container">

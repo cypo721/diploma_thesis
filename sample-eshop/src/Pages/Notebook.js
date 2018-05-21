@@ -11,7 +11,9 @@ let getState = (props) => {
         cart: props.cart? CartStore.provideCart() : CartStore.getCart()
     };
 };
-
+/*
+Shows notebook detail page.
+ */
 class Notebook extends Component {
 
     constructor(props) {
@@ -40,7 +42,6 @@ class Notebook extends Component {
     }
 
     addItem(){
-        console.log("adding");
         let cart = this.state.cart;
         let notebook = this.state.notebook;
         CartStore.addToCart(cart.id, notebook.id, cart.version);
@@ -54,7 +55,6 @@ class Notebook extends Component {
         }
 
         let notebook = this.state.notebook;
-        console.log("notebookslug" + notebook.id);
         let name = notebook.name? notebook.name.en : "missing name";
         let imageLink = notebook.mainPicture.value[0]? notebook.mainPicture.value[0].url : NoImage;
         let descriptionElement = notebook.description;

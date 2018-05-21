@@ -1,5 +1,9 @@
 import CommerceClient, {setToken} from "../CommerceClient"
 
+/*
+Used to work with cart and to create order from cart.
+ */
+
 let changeListeners = [];
 let cart;
 let addRequest;
@@ -102,7 +106,6 @@ let sendOrder = (cartId, version) => {
     order(cartId, version);
     CommerceClient().execute(orderRequest)
         .then(result => {
-            console.log(result);
             notifyChange();
         });
 }

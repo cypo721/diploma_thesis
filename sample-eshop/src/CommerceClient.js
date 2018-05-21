@@ -2,6 +2,10 @@ import { createClient } from '@commercetools/sdk-client'
 import { createAuthMiddlewareWithExistingToken } from '@commercetools/sdk-middleware-auth'
 import { createHttpMiddleware } from '@commercetools/sdk-middleware-http'
 
+/*
+Create client to communicate with CommerceTools API.
+ */
+
 let accessToken;
 
 // Middleware, when you want to use credentials of commerce tools project

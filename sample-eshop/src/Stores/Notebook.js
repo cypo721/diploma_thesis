@@ -2,6 +2,10 @@ import Client from "../Client.js";
 import CommerceClient from "../CommerceClient"
 import { initLanguageCodeObject, defaultLanguage } from '../Utilities/LanguageCodes'
 
+/*
+Used to work with notebook items.
+ */
+
 let changeListeners = [];
 let notebooks = initLanguageCodeObject();
 let comNotebooks;
@@ -19,7 +23,6 @@ const request = {
 };
 
 let fetchNotebooks = (language) => {
-    console.log("query " + language);
     var query = Client.items()
         .type('notebook');
 
@@ -29,7 +32,6 @@ let fetchNotebooks = (language) => {
 
     CommerceClient().execute(request)
         .then(result => {
-            console.log(result);
             notebooks[language] = result;
             query.get()
                 .subscribe(response => {
@@ -37,20 +39,16 @@ let fetchNotebooks = (language) => {
                     if (language) {
                         comNotebooks = notebooks[language];
                         notebooks[language] = response.items;
-                        console.log(response.items);
                         comNotebooks.body.results.forEach(function(el){
                             var match = notebooks[language].find(function(e){
                                 return e.externalSourceId.value === el.id;
                             });
                             if (match) {
                                 el = Object.assign(match, el);
-                                console.log(el);
                                 res.push(el);
                             }
                         })
-                        console.log(res);
                         notebooks[language] = res;
-                        console.log(notebooks[language]);
                     } else {
                         comNotebooks = notebooks[defaultLanguage];
                         notebooks[defaultLanguage] = response.items;
@@ -59,12 +57,10 @@ let fetchNotebooks = (language) => {
                                 return e.externalSourceId.value === el.id;
                             });
                             el = Object.assign(match, el);
-                            console.log(el);
+
                             res.push(el);
                         });
-                        console.log(res);
                         notebooks[defaultLanguage] = res;
-                        console.log(notebooks[defaultLanguage]);
                     }
 
                     notifyChange();

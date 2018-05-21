@@ -2,6 +2,10 @@ import Client from "../Client.js";
 import CommerceClient from "../CommerceClient"
 import { initLanguageCodeObject, defaultLanguage } from '../Utilities/LanguageCodes'
 
+/*
+Used to work with mobile items.
+ */
+
 let changeListeners = [];
 let mobiles = initLanguageCodeObject();
 let processings = [];
@@ -20,7 +24,6 @@ const request = {
 };
 
 let fetchMobiles = (language) => {
-    console.log("query " + language);
     var query = Client.items()
         .type('mobile_phone');
 
@@ -30,7 +33,6 @@ let fetchMobiles = (language) => {
     //fetch('http://commercetoolsintegration.azurewebsites.net/api/auth',{ mode: 'no-cors' }).then(result => console.log(result));
     CommerceClient().execute(request)
         .then(result => {
-            console.log(result);
             mobiles[language] = result;
             query.get()
                 .subscribe(response => {
@@ -38,20 +40,16 @@ let fetchMobiles = (language) => {
                     if (language) {
                         comMobiles = mobiles[language];
                         mobiles[language] = response.items;
-                        console.log(response.items);
                         comMobiles.body.results.forEach(function(el){
                             var match = mobiles[language].find(function(e){
                                 return e.externalSourceId.value === el.id;
                             });
                             if (match) {
                                 el = Object.assign(match, el);
-                                console.log(el);
                                 res.push(el);
                             }
                         })
-                        console.log(res);
                         mobiles[language] = res;
-                        console.log(mobiles[language]);
 
                     } else {
                         comMobiles = mobiles[defaultLanguage];
@@ -61,12 +59,9 @@ let fetchMobiles = (language) => {
                                 return e.externalSourceId.value === el.id;
                             });
                             el = Object.assign(match, el);
-                            console.log(el);
                             res.push(el);
                         });
-                        console.log(res);
                         mobiles[defaultLanguage] = res;
-                        console.log(mobiles[defaultLanguage]);
                     }
 
                     notifyChange();

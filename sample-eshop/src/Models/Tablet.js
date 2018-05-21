@@ -1,6 +1,8 @@
 import {  ContentItem } from 'kentico-cloud-delivery-typescript-sdk/_bundles';
 import {  resolveContentLink } from '../Utilities/ContentLinks';
-
+/*
+Tablet item model.
+ */
 export class Tablet extends ContentItem {
 
     constructor(){

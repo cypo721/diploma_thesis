@@ -11,7 +11,9 @@ let getState = (props) => {
         cart: props.cart? CartStore.provideCart() : CartStore.getCart()
     };
 };
-
+/*
+Shows tablet detail page.
+ */
 class Tablet extends Component {
 
     constructor(props) {
@@ -40,7 +42,6 @@ class Tablet extends Component {
     }
 
     addItem(){
-        console.log("adding");
         let cart = this.state.cart;
         let tablet = this.state.tablet;
         CartStore.addToCart(cart.id, tablet.id, cart.version);
@@ -54,7 +55,6 @@ class Tablet extends Component {
         }
 
         let tablet = this.state.tablet;
-        console.log("tabletslug" + tablet);
         let name = tablet ? tablet.name.en: "missing name";
         let imageLink =  tablet.mainPicture.value[0]? tablet.mainPicture.value[0].url : NoImage;
         let descriptionElement = tablet.description? tablet.description: "";

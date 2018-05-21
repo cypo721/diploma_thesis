@@ -1,4 +1,7 @@
 import _ from 'lodash'
+/*
+Initialize languages.
+ */
 
 export const languageCodes = [
     'en-US', // default languages

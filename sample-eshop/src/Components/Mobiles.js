@@ -10,7 +10,9 @@ let getState = (props) => {
         filter: MobileStore.getFilter()
     };
 };
-
+/*
+Lists mobiles in store
+ */
 class Mobiles extends Component {
 
     constructor(props) {
@@ -52,7 +54,6 @@ class Mobiles extends Component {
         };
 
         let mobiles = this.state.notebooks.filter(filter).map((mobile, index) => {
-            console.log(mobile);
             let price = mobile.masterVariant.prices[0]?
                 formatPrice(mobile.masterVariant.prices[0].value.centAmount / 100, this.props.language, mobile.masterVariant.prices[0].value.currencyCode)
                 : "missing price";

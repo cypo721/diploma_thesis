@@ -4,6 +4,9 @@ import { translate } from 'react-translate'
 import KenticoImage from '../Images/kentico-cloud.jpg'
 import CommerceImage from '../Images/com-tools.png'
 
+/*
+About us page.
+ */
 const AboutUs = (props) => {
     return (
         <div className="container">

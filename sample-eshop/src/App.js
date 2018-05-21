@@ -12,6 +12,9 @@ import MobilePage from './Pages/Mobile';
 import ContactsPage from "./Pages/Contacts"
 import CartPage from "./Pages/Cart"
 
+/*
+Used to route between pages.
+ */
 const App = (props) => {
   return (
     <div>

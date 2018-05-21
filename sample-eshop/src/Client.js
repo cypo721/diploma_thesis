@@ -7,6 +7,10 @@ import { Tablet } from './Models/Tablet'
 import { Notebook } from './Models/Notebook'
 import { Mobile } from './Models/Mobile'
 
+
+/*
+Create client to communicate with Kentico Cloud API.
+ */
 const projectId = '19eca161-c9c6-00ac-6bc5-822ae7351b73';
 const previewApiKey = "";
 

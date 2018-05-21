@@ -1,6 +1,8 @@
 import React from 'react';
 import { translate } from 'react-translate'
-
+/*
+Contact page.
+ */
 const Contacts = (props) => {
         return (
             <div className="container" >

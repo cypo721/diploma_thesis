@@ -6,6 +6,9 @@ import LinkButton from '../Components/LinkButton.js';
 
 import {englishCode, czechCode} from '../Utilities/LanguageCodes';
 
+/*
+Home page.
+ */
 const Home = (props) => {
   return (
     <div className="container">

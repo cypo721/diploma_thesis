@@ -33,7 +33,6 @@ class LocalizedApp extends Component {
         this.setState({
             language: newLanguage
         });
-        console.log(newLanguage);
         if (newUrl) {
             this.props.history.push(urlParts.splice(0, 2).join('/') + newUrl)
         } else {

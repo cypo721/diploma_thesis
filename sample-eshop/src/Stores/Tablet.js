@@ -2,6 +2,10 @@ import Client from "../Client.js";
 import CommerceClient from "../CommerceClient"
 import { initLanguageCodeObject, defaultLanguage } from '../Utilities/LanguageCodes'
 
+/*
+Used to work with tablet items.
+ */
+
 let changeListeners = [];
 let tablets = initLanguageCodeObject();
 let comTablets;
@@ -18,7 +22,6 @@ const request = {
 };
 
 let fetchTablets = (language) => {
-    console.log("query " + language);
     var query = Client.items()
         .type('tablet');
 
@@ -28,7 +31,6 @@ let fetchTablets = (language) => {
 
     CommerceClient().execute(request)
         .then(result => {
-            console.log(result);
             tablets[language] = result;
             query.get()
                 .subscribe(response => {
@@ -36,20 +38,16 @@ let fetchTablets = (language) => {
                     if (language) {
                         comTablets = tablets[language];
                         tablets[language] = response.items;
-                        console.log(response.items);
                         comTablets.body.results.forEach(function(el){
                             var match = tablets[language].find(function(e){
                                 return e.externalSourceId.value === el.id;
                             });
                             if (match) {
                                 el = Object.assign(match, el);
-                                console.log(el);
                                 res.push(el);
                             }
                         })
-                        console.log(res);
                         tablets[language] = res;
-                        console.log(tablets[language]);
 
                     } else {
                         comTablets = tablets[defaultLanguage];
@@ -59,12 +57,9 @@ let fetchTablets = (language) => {
                                 return e.externalSourceId.value === el.id;
                             });
                             el = Object.assign(match, el);
-                            console.log(el);
                             res.push(el);
                         });
-                        console.log(res);
                         tablets[defaultLanguage] = res;
-                        console.log(tablets[defaultLanguage]);
                     }
 
                     notifyChange();
@@ -97,7 +92,6 @@ class TabletStore {
     // Methods
 
     getTablet(tabletSlug, language) {
-        console.log(tabletSlug);
         return tablets[language || defaultLanguage].find((tablet) => tablet.id === tabletSlug);
     }
 
